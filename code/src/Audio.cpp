@@ -150,6 +150,7 @@ int Audio::AudioDecode(AVPacket* input_packet)
 
             throw std::runtime_error("Audio decoding failed");
         }
+        std::cout <<"error : "<<error <<std::endl;
         if (_data_present) {
         /* Initialize the temporary storage for the converted input samples. */
             _init_converted_samples(&converted_input_samples,_decode_frame->nb_samples);
@@ -164,7 +165,7 @@ int Audio::AudioDecode(AVPacket* input_packet)
             _add_samples_to_fifo(converted_input_samples,_decode_frame->nb_samples);
 
         }
-        return 0;
+        return error;
 
 
     }
@@ -289,19 +290,26 @@ void Audio::FlushEncoder(){
 }
 int  Audio::Flow(AVPacket* packet){
     try{
-        const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
-        if (av_audio_fifo_size(_fifo) < output_frame_size) {   
-            int ret = AudioDecode(packet);
-            if(ret < 0){
-                throw std::runtime_error( "Could not decode frame in 307");
+        do{
+            int decoded = 0;
+            const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
+            std::cout <<"pkt-size"<<packet->size<<std::endl;
+            if (av_audio_fifo_size(_fifo) < output_frame_size) {   
+                int ret = AudioDecode(packet);
+                decoded = FFMIN(ret,packet->size);
+                if(ret < 0){
+                    throw std::runtime_error( "Could not decode frame in 307");
+                }
             }
-        }
-        while (av_audio_fifo_size(_fifo) >= output_frame_size){
-            int ret = Load_encode_and_write();
-            if(ret < 0){
-                throw std::runtime_error( "Could not encode frame in 316");
+            while (av_audio_fifo_size(_fifo) >= output_frame_size){
+                int ret = Load_encode_and_write();
+                if(ret < 0){
+                    throw std::runtime_error( "Could not encode frame in 316");
+                }
             }
-        }
+            packet->data += decoded;
+            packet->size -= decoded;
+        }while(packet->size > 0);
         return 0;
     }catch(std::exception const& e)
     {

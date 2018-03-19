@@ -32,6 +32,7 @@ namespace Noovo{
         virtual void SetTime(int64_t,int64_t);
         int TranscodeFlow(AVPacket*);
         void MuxFlow(AVPacket*);
+        AVFrame* ReturnFrame(AVPacket*);
         virtual void InitalTool();//Video部份不須實做 因為沒有inital fifo或filtergraph
         virtual void CleanUp(){};//Video部份不須實做 因為沒有inital fifo或filtergraph
     };

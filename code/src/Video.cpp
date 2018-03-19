@@ -184,3 +184,15 @@ int Video::Flow(AVPacket* packet){
 void Video::InitalTool(){
 
 }
+AVFrame* Video::ReturnFrame(AVPacket *packet){
+    try{    
+        int ret = VideoDecoder(packet);
+        if(ret < 0){
+            throw std::runtime_error("Error decodeing packet in function TranscodeFlow");
+        } 
+        return _decode_frame;
+     }catch(std::exception const& e){
+        std::cout << "Exception: " << e.what() << "\n";
+        return nullptr;
+    }
+}
