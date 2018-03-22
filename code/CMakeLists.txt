@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Transcode)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./bin)
+set(CMAKE_CXX_FLAGS "-pedantic-errors")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
 file(GLOB SOURCES ${CMAKE_SOURCE_DIR}/src/*.cpp)

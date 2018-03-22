@@ -18,7 +18,7 @@ extern "C"{
     #include "libavutil/avutil.h"
     #include "libavutil/frame.h"
     #include "libavutil/opt.h"
-};
+}
 
 namespace Noovo{
     class Stream
@@ -33,5 +33,5 @@ namespace Noovo{
         virtual void InitalTool()=0;
         virtual void CleanUp()=0;
     };
-};
+}
 #endif

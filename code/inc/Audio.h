@@ -37,5 +37,5 @@ namespace Noovo{
         virtual void CleanUp();
 
     };
-};
+}
 #endif

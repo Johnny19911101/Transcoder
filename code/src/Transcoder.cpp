@@ -25,9 +25,11 @@ static int read_packet(void *opaque, uint8_t *buf, int buf_size){
     bd->size -= buf_size;
     return buf_size;
 }
-Transcoder::Transcoder() : ifmt_ctx(nullptr),avio_ctx(nullptr),avio_ctx_buffer(nullptr){      
+Transcoder::Transcoder() : ifmt_ctx(nullptr),avio_ctx(nullptr),avio_ctx_buffer(nullptr),_state(new Status()){      
         av_register_all();
 	    avfilter_register_all();
+        _state->Initialize();//Statusinital
+        _state->SetState(typeid(Status::Initial));
 }
 
 Transcoder& Transcoder::Instance(){
@@ -38,8 +40,7 @@ Transcoder& Transcoder::Instance(){
 }
 
 void Transcoder::InitalAvio(buffer_data* bd){
-
-    int ret=0;
+    int ret;
     if(ret < 0){
         std::cout << "Cannot open file"<<std::endl;
     }
@@ -51,20 +52,20 @@ void Transcoder::InitalAvio(buffer_data* bd){
     if (!avio_ctx_buffer) {
         std::cout << "Cannot malloc"<<std::endl;
     }
-    avio_ctx = avio_alloc_context(avio_ctx_buffer, BUFFER_SIZE,
-                                  0, bd, &read_packet, NULL, NULL);
+    avio_ctx = avio_alloc_context(avio_ctx_buffer, BUFFER_SIZE,0, bd, &read_packet, NULL, NULL);
     if (!avio_ctx) {
         ret = AVERROR(ENOMEM);
     }
     ifmt_ctx->pb = avio_ctx;
-
     InputFile(nullptr);
-    
 }
 
 void Transcoder::InputFile(const char* filename){
 //If you want to use buffer to input , just pass nullptr filename
     try{
+        _state->SetState(typeid(Status::SetConfig));
+        std::lock_guard<std::mutex> temp_lock(_lock_process);	
+         /*mutex lock*/
         int ret;
         unsigned int i;
         if ((ret = avformat_open_input(&ifmt_ctx, filename, NULL, NULL)) < 0) {
@@ -99,7 +100,7 @@ void Transcoder::InputFile(const char* filename){
                 }
             }
             ifmt_ctx->streams[i]->codec=codec_ctx;
-            
+       
         }
         av_dump_format(ifmt_ctx, i, filename, 0);
     }
@@ -109,9 +110,11 @@ void Transcoder::InputFile(const char* filename){
         avformat_close_input(&ifmt_ctx);
     } 
 }
-void Transcoder::OutputFile(const char *filename,int pid_video,int pid_audio)
-{
+void Transcoder::OutputFile(const char *filename,int pid_video,int pid_audio){
     try{
+        _state->SetState(typeid(Status::SetConfig));
+        std::lock_guard<std::mutex> temp_lock(_lock_process);
+        /*Lock the process*/
         AVFormatContext* ofmt_ctx = nullptr;
         AVStream *out_stream = nullptr;
         AVStream *in_stream = nullptr;
@@ -237,11 +240,15 @@ int Transcoder::OutputAmount(){
         it->second->Codecname();
     }
     return _pidObject.size();
+    _state->SetState(typeid(Status::SetConfigFinished));
 }
 void Transcoder::Flow(){
     AVPacket packet;
     int ret=0;
     init_packet(&packet);
+    _state->SetState(typeid(Status::Process));
+    std::lock_guard<std::mutex> temp_lock(_lock_process);
+     /*mutex lock*/
     for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
         std::cout << it->first <<std::endl;
         it->second->InitalTool();
@@ -266,8 +273,12 @@ void Transcoder::Flow(){
     for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
         it->second->CleanUp();
     }
+    _state->SetState(typeid(Status::Finished));
  }
 void Transcoder::CleanUp(){
+    std::lock_guard<std::mutex> temp_lock(_lock_process);	
+    /*mutex lock*/
+    _state->SetState(typeid(Status::Reset));
     for (int i = 0; i < ifmt_ctx->nb_streams; i++) {
         avcodec_close(ifmt_ctx->streams[i]->codec);
     }
@@ -276,13 +287,15 @@ void Transcoder::CleanUp(){
     for(auto it = ofmt_list.begin();it!=ofmt_list.end();++it){
         if ( !((*it)->oformat->flags & AVFMT_NOFILE))
             avio_close((*it)->pb);
-        int i = 0;
-        while((*it)->streams[i]){ //如果這個stream 指向null就代表沒去新增不須free
+        for(int i = 0;i < (*it)->nb_streams;++i){
             avcodec_close((*it)->streams[i]->codec);
-            ++it;
         }
         avformat_free_context(*it);
     }
     ofmt_list.clear();//destroy vector object
     _pidObject.clear();//destroy unordered map 
+    _state->SetState(typeid(Status::Idle));
+}
+std::string Transcoder::ReturnStateName(){
+    return _state->GetCurrentName();
 }

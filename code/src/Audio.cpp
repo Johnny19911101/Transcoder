@@ -150,7 +150,7 @@ int Audio::AudioDecode(AVPacket* input_packet)
 
             throw std::runtime_error("Audio decoding failed");
         }
-        std::cout <<"error : "<<error <<std::endl;
+        
         if (_data_present) {
         /* Initialize the temporary storage for the converted input samples. */
             _init_converted_samples(&converted_input_samples,_decode_frame->nb_samples);
@@ -165,6 +165,12 @@ int Audio::AudioDecode(AVPacket* input_packet)
             _add_samples_to_fifo(converted_input_samples,_decode_frame->nb_samples);
 
         }
+        av_frame_free(&_decode_frame);
+        if (converted_input_samples) {
+            av_freep(&converted_input_samples[0]);
+            delete[] converted_input_samples;
+        }
+        
         return error;
 
 
@@ -225,7 +231,6 @@ int Audio::Load_encode_and_write()
         * buffer use this number. Otherwise, use the maximum possible frame size. */
         const int frame_size = FFMIN(av_audio_fifo_size(_fifo),_ofmt_ctx->streams[_audio_index]->codec->frame_size);
         int data_written;
-
         /* Initialize temporary storage for one output frame. */
         _init_output_frame(&output_frame,_ofmt_ctx->streams[_audio_index]->codec,frame_size);
         /* Read as many samples from the FIFO buffer as required to fill the frame.
@@ -293,7 +298,7 @@ int  Audio::Flow(AVPacket* packet){
         do{
             int decoded = 0;
             const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
-            std::cout <<"pkt-size"<<packet->size<<std::endl;
+            
             if (av_audio_fifo_size(_fifo) < output_frame_size) {   
                 int ret = AudioDecode(packet);
                 decoded = FFMIN(ret,packet->size);
@@ -321,4 +326,5 @@ void Audio::CleanUp(){
     if (_fifo)
         av_audio_fifo_free(_fifo);
     swr_free(&_resample_context);
+
 }

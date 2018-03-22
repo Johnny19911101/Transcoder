@@ -12,7 +12,7 @@ void Video::SetTool(AVStream* input_stream,int outputindex ,AVFormatContext* ofm
     _video_index = outputindex;
     _ofmt_ctx = ofmt_ctx;
     if((av_q2d(_input_stream->avg_frame_rate) - av_q2d(_input_stream->r_frame_rate))< 2 && _input_stream->codec->codec_id == AV_CODEC_ID_H264 ){
-        _interlaced = false; //用avg_frame_rate跟r_frame_rate(fps跟tbr去判斷interlaced)
+        _interlaced = false; 
      }
 }
 int Video::VideoDecoder(AVPacket* packet){
@@ -180,6 +180,7 @@ int Video::Flow(AVPacket* packet){
     else{
         MuxFlow(packet);
     }
+    return 0;
 }
 void Video::InitalTool(){
 
