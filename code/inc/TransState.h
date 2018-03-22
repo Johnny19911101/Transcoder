@@ -44,6 +44,7 @@ namespace Noovo{
 		void SetState(const std::type_index &state_index);
         std::string GetCurrentName();
 		TransState & GetTransState(); 
+        std::type_index GetCurrentId();
 	protected:
 		typedef std::unordered_map<std::type_index, std::unique_ptr<TransState>> Modes;
 		Modes _modes;

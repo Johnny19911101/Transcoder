@@ -37,6 +37,9 @@ TransState & Noovo::Status::GetTransState()
 	/*lock*/
 	return *_current;
 }
+std::type_index Status::GetCurrentId(){
+	return typeid(*_current);
+}
 std::string Status::GetCurrentName(){
 	return _current->ReturnName();
 }

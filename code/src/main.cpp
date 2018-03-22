@@ -20,10 +20,10 @@ static void test1(){
     
 }
 static void test2(){
-    while(1){
-        std::cout <<test.ReturnStateName()<<std::endl;
-        sleep(1);
-    }
+        sleep(3);
+        test.StopProcess();
+    
+    
 }
 
 int main(){

@@ -25,7 +25,7 @@ static int read_packet(void *opaque, uint8_t *buf, int buf_size){
     bd->size -= buf_size;
     return buf_size;
 }
-Transcoder::Transcoder() : ifmt_ctx(nullptr),avio_ctx(nullptr),avio_ctx_buffer(nullptr),_state(new Status()){      
+Transcoder::Transcoder() : ifmt_ctx(nullptr),avio_ctx(nullptr),avio_ctx_buffer(nullptr),_state(new Status()),_turnoff(false){      
         av_register_all();
 	    avfilter_register_all();
         _state->Initialize();//Statusinital
@@ -202,7 +202,7 @@ void Transcoder::OutputFile(const char *filename,int pid_video,int pid_audio){
                     out_stream->time_base = enc_ctx->time_base;
                     ofmt_ctx->streams[stream_count]->codec = enc_ctx;
                     ++stream_count;
-                    //這邊不能用i應該要手動去加
+                   
                 } else if (dec_ctx->codec_type == AVMEDIA_TYPE_UNKNOWN) {                
                     throw std::runtime_error("Elementary stream #%d is of unknown type, cannot proceed\n");
                 } else {
@@ -253,7 +253,7 @@ void Transcoder::Flow(){
         std::cout << it->first <<std::endl;
         it->second->InitalTool();
     }
-    while (1) {
+    while (!_turnoff) {
         // Use the encoder's desired frame size for processing. 
         if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
             break; 
@@ -283,7 +283,7 @@ void Transcoder::CleanUp(){
         avcodec_close(ifmt_ctx->streams[i]->codec);
     }
     avformat_close_input(&ifmt_ctx);
-    ifmt_ctx = nullptr;//全部reset並指向null
+    ifmt_ctx = nullptr;
     for(auto it = ofmt_list.begin();it!=ofmt_list.end();++it){
         if ( !((*it)->oformat->flags & AVFMT_NOFILE))
             avio_close((*it)->pb);
@@ -295,7 +295,23 @@ void Transcoder::CleanUp(){
     ofmt_list.clear();//destroy vector object
     _pidObject.clear();//destroy unordered map 
     _state->SetState(typeid(Status::Idle));
+    _cleanup_done.notify_all();
 }
 std::string Transcoder::ReturnStateName(){
     return _state->GetCurrentName();
+}
+int Transcoder::StopProcess(){
+ try{   
+    if(_state->GetCurrentId() != typeid(Status::Process) ){
+        throw std::runtime_error("Not In PROCESS\n");     
+    }
+    _turnoff = true;
+    std::unique_lock<std::mutex> mLock(_lock_cleanup);
+    _cleanup_done.wait( mLock );
+    std::cout << "Stop the process and clean up done" <<std::endl;
+    return 0;
+    }catch(std::exception const& e) {
+        std::cout << "Exception: " << e.what() ;
+        return -1;
+    } 
 }

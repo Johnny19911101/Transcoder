@@ -1,11 +1,12 @@
 #ifndef __TRANSCODER_H__
 #define __TRANSCODER_H__
-#include "Stream.h"
-#include "TransState.h"
 #include <mutex>
 #include <memory>
 #include <vector>
+#include <condition_variable>
 #include <unordered_map>
+#include "Stream.h"
+#include "TransState.h"
 #define OUTPUT_BIT_RATE 48000
 /** The number of output channels */
 #define OUTPUT_CHANNELS 2
@@ -28,8 +29,12 @@ namespace Noovo{
         void Flow();
         void InitalAvio(buffer_data* bd);
         std::string ReturnStateName();
+        int StopProcess();//This funtcion will automatically Cleanup ,so dont cleanup at other thread again
     private:      
-        std::unique_ptr<Status> _state;   
+        std::unique_ptr<Status> _state;
+        bool _turnoff;
+        std::condition_variable _cleanup_done;
+        std::mutex _lock_cleanup;
         std::mutex _lock_process; 
         static std::unique_ptr<Transcoder> _instance;
         static std::once_flag _transcoder_flag;
