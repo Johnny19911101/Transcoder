@@ -1,5 +1,12 @@
 #ifndef __STREAM_H__
 #define __STREAM_H__
+#include <mutex>
+#include <memory>
+#include <iostream>
+#include <stdexcept>
+#include <vector>
+#include <condition_variable>
+#include <unordered_map>
 extern "C"{
     #include <stdio.h>
     #include <libavcodec/avcodec.h>
@@ -34,4 +41,5 @@ namespace Noovo{
         virtual void CleanUp()=0;
     };
 }
+
 #endif

@@ -1,5 +1,4 @@
 #include "Video.h"
-#include <iostream>
 using namespace Noovo;
 Video::Video(){
 
@@ -22,7 +21,7 @@ int Video::VideoDecoder(AVPacket* packet){
         av_packet_rescale_ts(packet,
                                  _input_stream->time_base,
                                  _ofmt_ctx->streams[_video_index]->codec->time_base);
-        _decode_frame = NULL;
+        _decode_frame = nullptr;
 
         _decode_frame = av_frame_alloc();
 
@@ -71,6 +70,7 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
             _decode_frame->pict_type = AV_PICTURE_TYPE_NONE;
             _decode_frame->pts = _decode_frame->best_effort_timestamp;
             ret = avcodec_encode_video2(_ofmt_ctx->streams[_video_index]->codec,enc_pkt,_decode_frame, &_got_frame);
+            av_frame_free(&_decode_frame);
             if (ret < 0)
                 throw std::runtime_error("Encoding failed");       
             av_packet_rescale_ts(enc_pkt,
@@ -91,16 +91,15 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
     catch(std::exception const& e)
     {
         std::cout << "Exception: " << e.what() << "\n";
-        av_frame_free(&_decode_frame);
         return -1 ;
     } 
 }
 void Video::FlushEncoder(){
-    AVPacket enc_pkt;
-    av_init_packet(&enc_pkt);
-    enc_pkt.data = nullptr;
-    enc_pkt.size = 0 ;    
+    AVPacket enc_pkt;  
     while (1) {      
+        av_init_packet(&enc_pkt);
+        enc_pkt.data = nullptr;
+        enc_pkt.size = 0 ;  
         int ret = avcodec_encode_video2(_ofmt_ctx->streams[_video_index]->codec,&enc_pkt,NULL, &_got_frame);
         if (ret < 0)
             break;
@@ -110,25 +109,22 @@ void Video::FlushEncoder(){
         enc_pkt.stream_index = 0;
         ret = av_interleaved_write_frame(_ofmt_ctx, &enc_pkt);
         av_packet_unref(&enc_pkt);
-    }
         av_free_packet(&enc_pkt);
+    }
+        
 }
 int Video::TranscodeFlow(AVPacket* packet){
-try{    
-        AVPacket enc;
+    AVPacket enc;
+    try{    
         av_init_packet(&enc);
         enc.data = NULL;
         enc.size = 0;
         int ret = VideoDecoder(packet);
-        if(ret < 0){
-            av_packet_unref(&enc);
-            av_free_packet(&enc);
+        if(ret < 0){           
             throw std::runtime_error("Error decodeing packet in function TranscodeFlow");
         } 
         ret = Encode_write_frame(&enc);
         if(ret < 0){
-            av_packet_unref(&enc);
-            av_free_packet(&enc);
             throw std::runtime_error("Error encoding packet in function TranscodeFlow");
         } 
         av_packet_unref(&enc);
@@ -136,6 +132,8 @@ try{
         return 0;
     }
     catch(std::exception const& e){   
+        av_packet_unref(&enc);
+        av_free_packet(&enc);
         std::cout << "Exception: " << e.what() << "\n";
         return -1;
     }

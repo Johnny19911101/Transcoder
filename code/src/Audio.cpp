@@ -1,5 +1,4 @@
 #include "Audio.h"
-#include<iostream>
 using namespace Noovo;
 Audio::Audio(){
 
@@ -137,20 +136,14 @@ int Audio::AudioDecode(AVPacket* input_packet)
     /* Packet used for temporary storage. */
     try{
 
-        converted_input_samples = NULL;
-        
+        converted_input_samples = NULL;     
         int error;
-
         _decode_frame = NULL;
-
-        _decode_frame = av_frame_alloc();
-    
+        _decode_frame = av_frame_alloc(); 
         if ((error = avcodec_decode_audio4(_input_stream->codec,_decode_frame,
                                         &_data_present, input_packet)) < 0) {
-
             throw std::runtime_error("Audio decoding failed");
-        }
-        
+        }   
         if (_data_present) {
         /* Initialize the temporary storage for the converted input samples. */
             _init_converted_samples(&converted_input_samples,_decode_frame->nb_samples);
@@ -169,11 +162,8 @@ int Audio::AudioDecode(AVPacket* input_packet)
         if (converted_input_samples) {
             av_freep(&converted_input_samples[0]);
             delete[] converted_input_samples;
-        }
-        
+        }        
         return error;
-
-
     }
     catch(std::exception const& e)
     {
@@ -191,10 +181,8 @@ void Audio::_init_output_frame(AVFrame **frame,AVCodecContext *output_codec_cont
     try{ 
         int error;
         /** Create a new frame to store the audio samples. */
-        if (!(*frame = av_frame_alloc())) {
-    
-             throw std::runtime_error("Could not allocate output frame");
-            
+        if (!(*frame = av_frame_alloc())) {   
+             throw std::runtime_error("Could not allocate output frame");          
         }
         /**
          * Set the frame's parameters, especially its size and format.
@@ -238,10 +226,8 @@ int Audio::Load_encode_and_write()
         if (av_audio_fifo_read(_fifo, (void **)output_frame->data, frame_size) < frame_size) {
             throw std::runtime_error("Could not read data from FIFO");
         }
-
         /* Encode one frame worth of audio samples. */
-        _encode_audio_frame(output_frame,&data_written);
-    
+        _encode_audio_frame(output_frame,&data_written);    
         av_frame_free(&output_frame);
         return 0;
     }
@@ -279,7 +265,6 @@ void  Audio::_encode_audio_frame(AVFrame *frame,int *data_written)
         av_packet_unref(&output_packet);
         av_free_packet(&output_packet);
     }
-
 }
 void Audio::FlushEncoder(){
     try{
@@ -298,7 +283,6 @@ int  Audio::Flow(AVPacket* packet){
         do{
             int decoded = 0;
             const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
-            
             if (av_audio_fifo_size(_fifo) < output_frame_size) {   
                 int ret = AudioDecode(packet);
                 decoded = FFMIN(ret,packet->size);
@@ -326,5 +310,5 @@ void Audio::CleanUp(){
     if (_fifo)
         av_audio_fifo_free(_fifo);
     swr_free(&_resample_context);
-
+    
 }
