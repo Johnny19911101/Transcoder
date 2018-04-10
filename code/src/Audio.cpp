@@ -158,6 +158,7 @@ int Audio::AudioDecode(AVPacket* input_packet)
             _add_samples_to_fifo(converted_input_samples,_decode_frame->nb_samples);
 
         }
+        av_frame_unref(_decode_frame);
         av_frame_free(&_decode_frame);
         if (converted_input_samples) {
             av_freep(&converted_input_samples[0]);

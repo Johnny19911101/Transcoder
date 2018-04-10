@@ -2,6 +2,7 @@
 #include "Stream.h"
 #include "Video.h"
 #include "Audio.h"
+#include <unistd.h>
 #define BUFFER_SIZE 188*100
 using namespace Noovo;
 std::unique_ptr<Transcoder> Transcoder::_instance;
@@ -13,16 +14,6 @@ static void init_packet(AVPacket *packet){
     packet->size = 0;
 }
 
-static int read_packet(void *opaque, uint8_t *buf, int buf_size){   
-    struct buffer_data *bd = (struct buffer_data *)opaque;
-    buf_size = FFMIN(buf_size, bd->size);
-    printf("ptr:%p size:%zu\n", bd->ptr, bd->size);
-    /* copy internal buffer data to buf */
-    memcpy(buf, bd->ptr, buf_size);
-    bd->ptr  += buf_size;
-    bd->size -= buf_size;
-    return buf_size;
-}
 Transcoder::Transcoder() :_wrapper(std::make_shared<CtxWrapper>()),_state(new Status()),_turnoff(false){      
         av_register_all();
 	    avfilter_register_all();
@@ -37,26 +28,16 @@ Transcoder& Transcoder::Instance(){
 	return *(_instance.get());
 }
 
-void Transcoder::InitalAvio(buffer_data* bd){
-/*  int ret;
-    if(ret < 0){
-        std::cout << "Cannot open file"<<std::endl;
-    }
-    if (!(ifmt_ctx = avformat_alloc_context())) {
-        std::cout << "Cannot alloc context"<<std::endl;
-    }
-    avio_ctx_buffer =(uint8_t*) av_malloc(BUFFER_SIZE);
-
-    if (!avio_ctx_buffer) {
-        std::cout << "Cannot malloc"<<std::endl;
-    }
-    avio_ctx = avio_alloc_context(avio_ctx_buffer, BUFFER_SIZE,0, bd, &read_packet, NULL, NULL);
-    if (!avio_ctx) {
-        ret = AVERROR(ENOMEM);
-    }
-    ifmt_ctx->pb = avio_ctx;
-    InputFile(nullptr);
-*/
+void Transcoder::InitalAvio(int buffer_size,void *callback_pointer,int(*read)(void *a, uint8_t *b, int c)
+                    ,std::string output,std::vector<std::pair<int,int> >& Pids){
+    try{
+        _state->SetState(typeid(Status::SetConfig));
+        std::lock_guard<std::mutex> temp_lock(_lock_process);	
+        _wrapper->SetAvio(buffer_size,callback_pointer,read,output,Pids,_pidObject,_ofmt_list);
+        _state->SetState(typeid(Status::SetConfigFinished));
+    }catch(std::exception const& e){
+        std::cout << "Exception: " << e.what() << "\n";
+    } 
 }
 
 void Transcoder::SetConfig(std::string input,std::string output,std::vector<std::pair<int,int> >& Pids){

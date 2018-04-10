@@ -1,5 +1,6 @@
 #include "Video.h"
 using namespace Noovo;
+int64_t Video::_count_frames = 0;
 Video::Video(){
 
 }
@@ -40,6 +41,7 @@ int Video::VideoDecoder(AVPacket* packet){
     {
         std::cout << "Exception: " << e.what() << "\n";
         _got_frame = 0;
+        av_frame_unref(_decode_frame);
         av_frame_free(&_decode_frame);
         return -1 ;
     } 
@@ -61,7 +63,6 @@ void Video::ResetDts(AVPacket *pkt){
     pkt->dts = pkt->dts - _start_time;
 }
 
-
 int Video::Encode_write_frame(AVPacket* enc_pkt) {
     try{
         
@@ -70,9 +71,10 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
             _decode_frame->pict_type = AV_PICTURE_TYPE_NONE;
             _decode_frame->pts = _decode_frame->best_effort_timestamp;
             ret = avcodec_encode_video2(_ofmt_ctx->streams[_video_index]->codec,enc_pkt,_decode_frame, &_got_frame);
+            av_frame_unref(_decode_frame);
             av_frame_free(&_decode_frame);
             if (ret < 0)
-                throw std::runtime_error("Encoding failed");       
+                throw std::runtime_error("Encoding failed");      
             av_packet_rescale_ts(enc_pkt,
                                  _ofmt_ctx->streams[_video_index]->codec->time_base,
                                  _ofmt_ctx->streams[_video_index]->time_base);
@@ -129,6 +131,9 @@ int Video::TranscodeFlow(AVPacket* packet){
         } 
         av_packet_unref(&enc);
         av_free_packet(&enc);
+#ifdef TIMER
+        _count_frames++;
+#endif
         return 0;
     }
     catch(std::exception const& e){   
@@ -194,4 +199,10 @@ AVFrame* Video::ReturnFrame(AVPacket *packet){
         std::cout << "Exception: " << e.what() << "\n";
         return nullptr;
     }
+}
+int64_t Video::ReturnAmount(){
+    return _count_frames;
+}
+void Video::ResetAmount(){
+    _count_frames = 0;
 }

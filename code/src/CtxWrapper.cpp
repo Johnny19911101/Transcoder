@@ -3,16 +3,48 @@
 #include "Video.h"
 #include "Audio.h"
 using namespace Noovo;
-#define OUTPUT_BIT_RATE 48000
+#define OUTPUT_BIT_RATE 44100
 /** The number of output channels */
 #define OUTPUT_CHANNELS 2
 /** The audio sample output format */
 #define OUTPUT_SAMPLE_FORMAT AV_SAMPLE_FMT_S16
+#define VIDEO_ENCODER "h264_omx"
+#define AUDIO_ENCODER "libfdk_aac"
 CtxWrapper::CtxWrapper(){
 
 }
 CtxWrapper::~CtxWrapper(){
 
+}
+void CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpeg_callback)(void *opaque, uint8_t *buf, int buf_size)
+                        ,const std::string& output,const std::vector<std::pair<int,int> >& pid_pair
+                        ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
+                        , std::vector<AVFormatContext*>& ofmt_list){
+    try{
+        if(!(_ifmt_ctx = avformat_alloc_context())){
+            throw std::runtime_error("Cannot alloc information ");
+        } 
+        unsigned char *avio_ctx_buffer = nullptr;
+        avio_ctx_buffer = (unsigned char*)av_malloc(avio_ctx_buffer_size);
+        _avio_ctx =avio_alloc_context(avio_ctx_buffer, avio_ctx_buffer_size,
+                                  0, call_back_var, ffmpeg_callback, nullptr, 0);
+        _ifmt_ctx -> pb = _avio_ctx;
+        std::vector<int> Pids;
+        for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
+            Pids.push_back(it->first);
+            Pids.push_back(it->second);
+        }
+        if(_ifmtInital(nullptr,Pids)<0)
+            throw std::runtime_error("Cannot find stream information");
+        int i = 0;
+        for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
+            std::string outputfile= output+std::to_string(i)+".m3u8";
+            if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0)
+             throw std::runtime_error("Cannot find stream information ");
+        }
+    }catch(std::exception const& e) {
+        std::cout << "Exception: " << e.what() ;
+    } 
 }
 int CtxWrapper::SetConfig(const std::string& inputfile,const std::string& output,const std::vector<std::pair<int,int> >& pid_pair
                             ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
@@ -23,13 +55,13 @@ int CtxWrapper::SetConfig(const std::string& inputfile,const std::string& output
             Pids.push_back(it->first);
             Pids.push_back(it->second);
         }
-        if(_ifmtInital(inputfile,Pids)<0)
-            throw std::runtime_error("Cannot find stream information in 20");
+        if(_ifmtInital(inputfile.c_str(),Pids)<0)
+            throw std::runtime_error("Cannot find stream information");
         int i = 0;
         for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
             std::string outputfile= output+std::to_string(i)+".m3u8";
             if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0)
-             throw std::runtime_error("Cannot find stream information in 20");
+             throw std::runtime_error("Cannot find stream information ");
         }
         return 0;
     }catch(std::exception const& e) {
@@ -37,11 +69,10 @@ int CtxWrapper::SetConfig(const std::string& inputfile,const std::string& output
         return -1;
     } 
 }
-int CtxWrapper::_ifmtInital(const std::string& filename,const std::vector<int>& pids){
+int CtxWrapper::_ifmtInital(const char* filename,const std::vector<int>& pids){
     try{    
-        _ifmt_ctx = nullptr;
         int ret;
-        if ((ret = avformat_open_input(&_ifmt_ctx, filename.c_str(), NULL, NULL)) < 0) 
+        if ((ret = avformat_open_input(&_ifmt_ctx, filename, NULL, NULL)) < 0) 
             throw std::runtime_error("Cannot open input file");
         if ((ret = avformat_find_stream_info(_ifmt_ctx, NULL)) < 0) 
             throw std::runtime_error("Cannot find stream information");
@@ -49,7 +80,7 @@ int CtxWrapper::_ifmtInital(const std::string& filename,const std::vector<int>& 
             if(find(pids.begin(),pids.end(),(_ifmt_ctx)->streams[i]->id) != pids.end())
                 _findDecoder(i);
         }
-        av_dump_format(_ifmt_ctx, 0, filename.c_str(), 0);
+        av_dump_format(_ifmt_ctx, 0, filename, 0);
         return 0;
     }catch(std::exception const& e) {
         std::cout << "Exception: " << e.what() ;
@@ -133,7 +164,7 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                 stream_count++;      
             }
         }     
-        av_dump_format(ofmt_ctx, 0, filename.c_str(), 1);
+         av_opt_set(ofmt_ctx->priv_data,"hls_flags","delete_segments",0);
         Pid_video->SetTime(audio_starttime,dts_starttime);
         _ofmtheader(ofmt_ctx,filename);
         ofmt_list.push_back(ofmt_ctx); 
@@ -157,7 +188,7 @@ void  CtxWrapper::_ofmtheader(AVFormatContext*& ofmt_ctx,const std::string& file
 }
 void CtxWrapper::_videoEncoder(AVCodecContext** enc_ctx,AVCodecContext*& dec_ctx,AVCodec** encoder){  
     
-    (*encoder) = avcodec_find_encoder_by_name("libx264");                                        
+    (*encoder) = avcodec_find_encoder_by_name(VIDEO_ENCODER);                                        
     if (!*encoder) {
         throw std::runtime_error("Necessary encoder not found\n");
     }
@@ -178,7 +209,7 @@ void CtxWrapper::_videoEncoder(AVCodecContext** enc_ctx,AVCodecContext*& dec_ctx
     /* Third parameter can be used to pass settings to encoder */  
 }
 void CtxWrapper::_audioEncoder(AVCodecContext** enc_ctx,AVCodecContext*& dec_ctx,AVCodec** encoder){  
-    (*encoder) = avcodec_find_encoder_by_name("libfdk_aac");             
+    (*encoder) = avcodec_find_encoder_by_name(AUDIO_ENCODER);             
     if (!*encoder) {
         throw std::runtime_error("Necessary encoder not found\n");
     }
@@ -198,6 +229,10 @@ void CtxWrapper::_audioEncoder(AVCodecContext** enc_ctx,AVCodecContext*& dec_ctx
     /* Third parameter can be used to pass settings to encoder */
 }
 void CtxWrapper::_ifmtclean(){
+    if (_avio_ctx) {
+        av_freep(&_avio_ctx->buffer);
+        av_freep(&_avio_ctx);
+    }
     for (int i = 0; i < _ifmt_ctx->nb_streams; i++) {
         if(_ifmt_ctx->streams[i]->codec){
            avcodec_close(_ifmt_ctx->streams[i]->codec);
