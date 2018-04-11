@@ -28,6 +28,7 @@ namespace Noovo{
         void _ofmtheader(AVFormatContext*& ,const std::string& );
         void _ifmtclean();
         void _oneofmtclean(AVFormatContext**);
+        void _option(AVFormatContext*);
         int _ifmtInital(const char*,const std::vector<int>&);
         int _ofmtInital(const std::string&,int,int
                         ,std::unordered_map<int,std::shared_ptr<Stream>>&

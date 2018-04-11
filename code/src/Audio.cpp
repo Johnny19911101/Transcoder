@@ -1,4 +1,5 @@
 #include "Audio.h"
+#include <iomanip>
 using namespace Noovo;
 Audio::Audio(){
 
@@ -15,9 +16,14 @@ void Audio::SetTool(AVStream* input_stream,int outputindex ,AVFormatContext* ofm
     _audio_index = outputindex;
     _ofmt_ctx = ofmt_ctx;
 }
+void Audio::_calculatePacketDuration(){
+    double duration_time((double)_ofmt_ctx->streams[_audio_index]->codec->frame_size/(double)_ofmt_ctx->streams[_audio_index]->codec->sample_rate);
+    _packet_duration = duration_time*_ofmt_ctx->streams[_audio_index]->time_base.den;
+}
 void Audio::InitalTool(){
     InitResampler();
     InitFifo();
+    _calculatePacketDuration();
 }
 int Audio::InitResampler(){
     try{
@@ -135,7 +141,8 @@ int Audio::AudioDecode(AVPacket* input_packet)
 {
     /* Packet used for temporary storage. */
     try{
-
+        _pts = input_packet->pts;
+        _dts = input_packet->dts;
         converted_input_samples = NULL;     
         int error;
         _decode_frame = NULL;
@@ -210,7 +217,7 @@ void Audio::_init_output_frame(AVFrame **frame,AVCodecContext *output_codec_cont
     }
     
 }
-int Audio::Load_encode_and_write()
+int Audio::Load_encode_and_write(int64_t _now_pts)
 {
     /* Temporary storage of the output samples of the frame written to the file. */
     try{    
@@ -228,7 +235,7 @@ int Audio::Load_encode_and_write()
             throw std::runtime_error("Could not read data from FIFO");
         }
         /* Encode one frame worth of audio samples. */
-        _encode_audio_frame(output_frame,&data_written);    
+        _encode_audio_frame(output_frame,&data_written,_now_pts);    
         av_frame_free(&output_frame);
         return 0;
     }
@@ -237,7 +244,7 @@ int Audio::Load_encode_and_write()
         std::cout << "Exception: " << e.what() << "\n";
     }
 }
-void  Audio::_encode_audio_frame(AVFrame *frame,int *data_written)
+void  Audio::_encode_audio_frame(AVFrame *frame,int *data_written,int64_t now_pts)
 {
     /* Packet used for temporary storage. */
     AVPacket output_packet;
@@ -256,6 +263,8 @@ void  Audio::_encode_audio_frame(AVFrame *frame,int *data_written)
         throw std::runtime_error("Could not encode frame");
     }
     output_packet.stream_index = _audio_index;
+    output_packet.duration = _packet_duration;
+    output_packet.pts =now_pts;
     /* Write one audio frame from the temporary packet to the output file. */
     if (*data_written) {
         if ((error = av_write_frame(_ofmt_ctx, &output_packet)) < 0) {
@@ -271,7 +280,7 @@ void Audio::FlushEncoder(){
     try{
         int data_written =0 ;
         do{
-            _encode_audio_frame(NULL,&data_written);
+            _encode_audio_frame(NULL,&data_written,AV_NOPTS_VALUE);
         }while(data_written);
     
     }catch(std::exception const& e)
@@ -281,9 +290,11 @@ void Audio::FlushEncoder(){
 }
 int  Audio::Flow(AVPacket* packet){
     try{
+         const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
+        long double real_time=(double)(packet->pts/packet->duration)*((double)_input_stream->codec->frame_size/(double)_input_stream->codec->sample_rate);
+        int64_t  _now_pts(real_time*_ofmt_ctx->streams[_audio_index]->codec->sample_rate*_packet_duration/output_frame_size);       
         do{
-            int decoded = 0;
-            const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
+            int decoded = 0;     
             if (av_audio_fifo_size(_fifo) < output_frame_size) {   
                 int ret = AudioDecode(packet);
                 decoded = FFMIN(ret,packet->size);
@@ -292,10 +303,11 @@ int  Audio::Flow(AVPacket* packet){
                 }
             }
             while (av_audio_fifo_size(_fifo) >= output_frame_size){
-                int ret = Load_encode_and_write();
+                int ret = Load_encode_and_write(_now_pts);
                 if(ret < 0){
                     throw std::runtime_error( "Could not encode frame in 316");
                 }
+                _now_pts += _packet_duration;
             }
             packet->data += decoded;
             packet->size -= decoded;

@@ -20,16 +20,16 @@ static int read_packet(void *opaque, uint8_t *buf, int buf_size)
 {
    // struct buffer_data *bd = (struct buffer_data *)opaque;
 
-    if(bd.size < 4096){
+/*    if(bd.size < 4096){
         bd.ptr = buffer;
         bd.size = buffer_size;
-    }
+    }*/
     buf_size = FFMIN(buf_size, bd.size);
 
     
     if (!buf_size)
         return AVERROR_EOF;
-    printf("ptr:%p size:%zu\n", bd.ptr, bd.size);
+   // printf("ptr:%p size:%zu\n", bd.ptr, bd.size);
 
     /* copy internal buffer data to buf */
     memcpy(buf, bd.ptr, buf_size);
@@ -62,15 +62,15 @@ static void test2(){
 int main(){
     int ret;
     
-    std::pair<int,int> t{0x100,0x110};
+    std::pair<int,int> t{3041,3042};
     std::vector<std::pair<int,int>> test4;
     test4.push_back(t);
-    ret = av_file_map("/home/johnny/abc.ts", &buffer, &buffer_size, 0, NULL);
+    ret = av_file_map("/home/johnny/test.ts", &buffer, &buffer_size, 0, NULL);
     bd.ptr=buffer;
     bd.size =buffer_size;
     Transcoder& test = Transcoder::Instance();
-    test.InitalAvio(2048,nullptr,&read_packet,"test2",test4);
-     test.Process();
+    test.InitalAvio(2048,nullptr,&read_packet,"test.m3u8",test4);
+    test.Process();
     return 0;
 
 }

@@ -3,12 +3,12 @@
 #include "Video.h"
 #include "Audio.h"
 using namespace Noovo;
-#define OUTPUT_BIT_RATE 44100
+#define OUTPUT_BIT_RATE 48000
 /** The number of output channels */
 #define OUTPUT_CHANNELS 2
 /** The audio sample output format */
 #define OUTPUT_SAMPLE_FORMAT AV_SAMPLE_FMT_S16
-#define VIDEO_ENCODER "h264_omx"
+#define VIDEO_ENCODER "libx264"
 #define AUDIO_ENCODER "libfdk_aac"
 CtxWrapper::CtxWrapper(){
 
@@ -38,7 +38,7 @@ void CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpe
             throw std::runtime_error("Cannot find stream information");
         int i = 0;
         for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
-            std::string outputfile= output+std::to_string(i)+".m3u8";
+            std::string outputfile(output);
             if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0)
              throw std::runtime_error("Cannot find stream information ");
         }
@@ -159,13 +159,13 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                     throw std::runtime_error("Failed to copy encoder parameters to output stream \n");                   
                 if (ofmt_ctx->oformat->flags & AVFMT_GLOBALHEADER)
                     enc_ctx->flags |= AV_CODEC_FLAG_GLOBAL_HEADER;
-                out_stream->time_base = enc_ctx->time_base;
+                out_stream->time_base = in_stream->time_base;
                 out_stream->codec = enc_ctx;
                 stream_count++;      
             }
         }     
-         av_opt_set(ofmt_ctx->priv_data,"hls_flags","delete_segments",0);
-        Pid_video->SetTime(audio_starttime,dts_starttime);
+        _option(ofmt_ctx);
+        av_dump_format(ofmt_ctx, 0, filename.c_str(),1);
         _ofmtheader(ofmt_ctx,filename);
         ofmt_list.push_back(ofmt_ctx); 
         return 0;       
@@ -174,6 +174,12 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
         _oneofmtclean(&ofmt_ctx);
         return -1;
     }    
+}
+void  CtxWrapper::_option(AVFormatContext *ctx){
+        av_opt_set_int(ctx->priv_data,"hls_list_size",10,0);
+        av_opt_set_int(ctx->priv_data,"hls_time",10,0);
+        av_opt_set(ctx->priv_data,"hls_flags","split_by_time",0);
+        av_opt_set(ctx->priv_data,"hls_flags","delete_segments",0);
 }
 void  CtxWrapper::_ofmtheader(AVFormatContext*& ofmt_ctx,const std::string& filename){
     if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE)) {

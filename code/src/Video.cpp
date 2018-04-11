@@ -11,13 +11,9 @@ void Video::SetTool(AVStream* input_stream,int outputindex ,AVFormatContext* ofm
     _input_stream = input_stream;
     _video_index = outputindex;
     _ofmt_ctx = ofmt_ctx;
-    if((av_q2d(_input_stream->avg_frame_rate) - av_q2d(_input_stream->r_frame_rate))< 2 && _input_stream->codec->codec_id == AV_CODEC_ID_H264 ){
-        _interlaced = false; 
-     }
 }
 int Video::VideoDecoder(AVPacket* packet){
     try{
-        ResetPts(packet);
 
         av_packet_rescale_ts(packet,
                                  _input_stream->time_base,
@@ -49,18 +45,7 @@ int Video::VideoDecoder(AVPacket* packet){
 void Video::Codecname(){
     std::cout << "Input Stream Codec " << _input_stream->codec->codec->name<<std::endl;
     std::cout << "Output Stream Codec " << _ofmt_ctx->streams[_video_index]->codec->codec->name<<std::endl;
-    std::cout << "Start time "<<_start_time << std::endl; 
     std::cout << std::boolalpha << _interlaced << std::endl;
-}
-void Video::SetTime(int64_t pts,int64_t dts){
-    _start_time =pts;  
-    _first_dts =dts; 
-}
-void Video::ResetPts(AVPacket *pkt){
-    pkt->pts = pkt->pts - _start_time;
-}
-void Video::ResetDts(AVPacket *pkt){
-    pkt->dts = pkt->dts - _start_time;
 }
 
 int Video::Encode_write_frame(AVPacket* enc_pkt) {
@@ -69,7 +54,6 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
         int ret;
         if(_got_frame){        
             _decode_frame->pict_type = AV_PICTURE_TYPE_NONE;
-            _decode_frame->pts = _decode_frame->best_effort_timestamp;
             ret = avcodec_encode_video2(_ofmt_ctx->streams[_video_index]->codec,enc_pkt,_decode_frame, &_got_frame);
             av_frame_unref(_decode_frame);
             av_frame_free(&_decode_frame);
@@ -151,14 +135,12 @@ void Video::MuxFlow(AVPacket* pkt){
              last_correct_dts += pkt->duration;
              pkt->dts = last_correct_dts;
         }else{
-            ResetDts(pkt);
             last_correct_dts = pkt->dts;                
         }
         if(pkt->pts == AV_NOPTS_VALUE){
              last_correct_pts += pkt->duration;
              pkt->pts = last_correct_pts;
         }else{
-            ResetPts(pkt);
             last_correct_pts = pkt->pts;                
         }
   

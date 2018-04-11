@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (Transcode)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./bin)
-set(CMAKE_CXX_FLAGS "-pedantic-errors")
+set(CMAKE_CXX_FLAGS "-pedantic-errors -DTIMER")
 set(CMAKE_C_FLAGS "-g")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_BUILD_TYPE Debug)
@@ -13,4 +13,3 @@ add_executable(Transcode ${SOURCES})
 set(ffmpeg_lib avformat avfilter avcodec swresample swscale avutil avdevice z m pthread x264 fdk-aac postproc va dl  vdpau X11 va-drm va-x11)
 target_link_libraries(Transcode ${ffmpeg_lib})
 target_link_libraries(Transcode pthread)
-
