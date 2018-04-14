@@ -12,6 +12,7 @@ void Noovo::Status::Initialize()
 	/*lock*/
 	_init_state<Status::Initial>();//"Initialize");
 	_init_state<Status::SetConfig>();//"SetConfig");
+	_init_state<Status::SetFailed>();
 	_init_state<Status::SetConfigFinished>();//SetConfigFinished
 	_init_state<Status::Process>();//"Process");
 	_init_state<Status::Finished>();//"Finished");

@@ -21,22 +21,29 @@ Transcoder::Transcoder() :_wrapper(std::make_shared<CtxWrapper>()),_state(new St
         _state->SetState(typeid(Status::Initial));
 }
 
-Transcoder& Transcoder::Instance(){
+Transcoder* Transcoder::Instance(){
     std::call_once(_transcoder_flag,[](){
 		Transcoder::_instance.reset(new Transcoder);       
 	});
-	return *(_instance.get());
+	return (_instance.get());
 }
 
-void Transcoder::InitalAvio(int buffer_size,void *callback_pointer,int(*read)(void *a, uint8_t *b, int c)
+int Transcoder::InitalAvio(int buffer_size,void *callback_pointer,int(*read)(void *a, uint8_t *b, int c)
                     ,std::string output,std::vector<std::pair<int,int> >& Pids){
+    int pass_value;
     try{
         _state->SetState(typeid(Status::SetConfig));
         std::lock_guard<std::mutex> temp_lock(_lock_process);	
-        _wrapper->SetAvio(buffer_size,callback_pointer,read,output,Pids,_pidObject,_ofmt_list);
+        pass_value=_wrapper->SetAvio(buffer_size,callback_pointer,read,output,Pids,_pidObject,_ofmt_list);
+        if(pass_value !=0 ){
+           _state->SetState(typeid(Status::SetFailed)); 
+           throw std::runtime_error("Failed set");
+        }
         _state->SetState(typeid(Status::SetConfigFinished));
+        return pass_value;
     }catch(std::exception const& e){
         std::cout << "Exception: " << e.what() << "\n";
+        return pass_value;
     } 
 }
 
@@ -45,11 +52,12 @@ void Transcoder::SetConfig(std::string input,std::string output,std::vector<std:
     try{
         _state->SetState(typeid(Status::SetConfig));
         std::lock_guard<std::mutex> temp_lock(_lock_process);	
-        if(_wrapper->SetConfig(input,output,Pids,_pidObject,_ofmt_list)<0)
+        if(_wrapper->SetConfig(input,output,Pids,_pidObject,_ofmt_list)!=0)
             throw std::runtime_error("Failed allocating intput file");
         _state->SetState(typeid(Status::SetConfigFinished));
     }catch(std::exception const& e){
         std::cout << "Exception: " << e.what() << "\n";
+        _state->SetState(typeid(Status::SetFailed)); 
     } 
 }
 
@@ -123,4 +131,7 @@ int Transcoder::StopProcess(){
         std::cout << "Exception: " << e.what() ;
         return -1;
     } 
+}
+std::thread Transcoder::Thread_process(){
+    return std::thread(&Transcoder::Process,this);
 }

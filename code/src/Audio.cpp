@@ -25,6 +25,7 @@ void Audio::InitalTool(){
     InitFifo();
     _calculatePacketDuration();
 }
+
 int Audio::InitResampler(){
     try{
         int error;
@@ -165,7 +166,6 @@ int Audio::AudioDecode(AVPacket* input_packet)
             _add_samples_to_fifo(converted_input_samples,_decode_frame->nb_samples);
 
         }
-        av_frame_unref(_decode_frame);
         av_frame_free(&_decode_frame);
         if (converted_input_samples) {
             av_freep(&converted_input_samples[0]);
@@ -220,8 +220,8 @@ void Audio::_init_output_frame(AVFrame **frame,AVCodecContext *output_codec_cont
 int Audio::Load_encode_and_write(int64_t _now_pts)
 {
     /* Temporary storage of the output samples of the frame written to the file. */
-    try{    
-        AVFrame *output_frame;
+    AVFrame *output_frame;
+    try{       
         /* Use the maximum number of possible samples per frame.
         * If there is less than the maximum possible frame size in the FIFO
         * buffer use this number. Otherwise, use the maximum possible frame size. */
@@ -242,6 +242,7 @@ int Audio::Load_encode_and_write(int64_t _now_pts)
     catch(std::exception const& e)
     {
         std::cout << "Exception: " << e.what() << "\n";
+        av_frame_free(&output_frame);
     }
 }
 void  Audio::_encode_audio_frame(AVFrame *frame,int *data_written,int64_t now_pts)
@@ -268,11 +269,11 @@ void  Audio::_encode_audio_frame(AVFrame *frame,int *data_written,int64_t now_pt
     /* Write one audio frame from the temporary packet to the output file. */
     if (*data_written) {
         if ((error = av_write_frame(_ofmt_ctx, &output_packet)) < 0) {
-            av_packet_unref(&output_packet);
             av_free_packet(&output_packet);
             throw std::runtime_error( "Could not write frame");
         }
-        av_packet_unref(&output_packet);
+        av_free_packet(&output_packet);
+    }else{
         av_free_packet(&output_packet);
     }
 }

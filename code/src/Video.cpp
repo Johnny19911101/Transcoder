@@ -37,7 +37,6 @@ int Video::VideoDecoder(AVPacket* packet){
     {
         std::cout << "Exception: " << e.what() << "\n";
         _got_frame = 0;
-        av_frame_unref(_decode_frame);
         av_frame_free(&_decode_frame);
         return -1 ;
     } 
@@ -55,7 +54,6 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
         if(_got_frame){        
             _decode_frame->pict_type = AV_PICTURE_TYPE_NONE;
             ret = avcodec_encode_video2(_ofmt_ctx->streams[_video_index]->codec,enc_pkt,_decode_frame, &_got_frame);
-            av_frame_unref(_decode_frame);
             av_frame_free(&_decode_frame);
             if (ret < 0)
                 throw std::runtime_error("Encoding failed");      
@@ -69,6 +67,8 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
                 throw std::runtime_error("Write frame error");
             if (!(_got_frame))
                 throw std::runtime_error("Encoding failed");
+        }else{
+            av_frame_free(&_decode_frame);
         }          
         return 0;
         /* prepare packet for muxing */
@@ -94,7 +94,6 @@ void Video::FlushEncoder(){
          av_packet_rescale_ts(&enc_pkt, _ofmt_ctx->streams[_video_index]->codec->time_base, _ofmt_ctx->streams[_video_index]->time_base);
         enc_pkt.stream_index = 0;
         ret = av_interleaved_write_frame(_ofmt_ctx, &enc_pkt);
-        av_packet_unref(&enc_pkt);
         av_free_packet(&enc_pkt);
     }
         
@@ -113,7 +112,6 @@ int Video::TranscodeFlow(AVPacket* packet){
         if(ret < 0){
             throw std::runtime_error("Error encoding packet in function TranscodeFlow");
         } 
-        av_packet_unref(&enc);
         av_free_packet(&enc);
 #ifdef TIMER
         _count_frames++;
@@ -121,7 +119,6 @@ int Video::TranscodeFlow(AVPacket* packet){
         return 0;
     }
     catch(std::exception const& e){   
-        av_packet_unref(&enc);
         av_free_packet(&enc);
         std::cout << "Exception: " << e.what() << "\n";
         return -1;

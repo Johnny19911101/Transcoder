@@ -33,6 +33,7 @@ namespace Noovo{
     public:
         class Initial : public TransState{};
         class SetConfig : public TransState{};
+        class SetFailed : public TransState{};
         class SetConfigFinished : public TransState{};
         class Process : public TransState{};
         class Finished : public TransState{};

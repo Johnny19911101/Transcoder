@@ -7,14 +7,15 @@
 namespace Noovo{
     class Transcoder  {
     public:
-        static Transcoder& Instance();
+        static Transcoder* Instance();
         int OutputAmount();
         void CleanUp();
         void SetConfig(std::string,std::string,std::vector<std::pair<int,int> >&);
         void Process();
-        void InitalAvio(int ,void *,int(*)(void *, uint8_t *, int)
+        int InitalAvio(int ,void *,int(*)(void *, uint8_t *, int)
                     ,std::string ,std::vector<std::pair<int,int> >& );
         std::string ReturnStateName();
+        std::thread Thread_process();
         int StopProcess();//This funtcion will automatically Cleanup ,so dont cleanup at other thread again
     private:      
         static std::unique_ptr<Transcoder> _instance;
@@ -27,7 +28,6 @@ namespace Noovo{
         std::mutex _lock_cleanup,_lock_process;
         std::unordered_map<int,std::shared_ptr<Stream> > _pidObject;
         std::vector<AVFormatContext*> _ofmt_list;
-        
     };
 }
 

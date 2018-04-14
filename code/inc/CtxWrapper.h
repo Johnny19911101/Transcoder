@@ -9,7 +9,7 @@ namespace Noovo{
     public:
         CtxWrapper();
         ~CtxWrapper();
-        void SetAvio(int ,void *,int(*)(void *, uint8_t *, int )
+        int SetAvio(int ,void *,int(*)(void *, uint8_t *, int )
                     ,const std::string& ,const std::vector<std::pair<int,int>>& 
                     ,std::unordered_map<int,std::shared_ptr<Stream>>& 
                     , std::vector<AVFormatContext*>& );

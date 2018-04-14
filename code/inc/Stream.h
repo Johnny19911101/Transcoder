@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <thread>
 #include <condition_variable>
 #include <unordered_map>
 extern "C"{

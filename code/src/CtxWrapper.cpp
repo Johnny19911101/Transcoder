@@ -10,18 +10,21 @@ using namespace Noovo;
 #define OUTPUT_SAMPLE_FORMAT AV_SAMPLE_FMT_S16
 #define VIDEO_ENCODER "libx264"
 #define AUDIO_ENCODER "libfdk_aac"
+enum Error_code{TASK_DOWN,ALLOC_FAIL,INPUT_STREAM_FAIL,OUTPUT_STREAM_FAIL};
 CtxWrapper::CtxWrapper(){
 
 }
 CtxWrapper::~CtxWrapper(){
 
 }
-void CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpeg_callback)(void *opaque, uint8_t *buf, int buf_size)
+int CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpeg_callback)(void *opaque, uint8_t *buf, int buf_size)
                         ,const std::string& output,const std::vector<std::pair<int,int> >& pid_pair
                         ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
                         , std::vector<AVFormatContext*>& ofmt_list){
+    Error_code pass_value(TASK_DOWN);
     try{
         if(!(_ifmt_ctx = avformat_alloc_context())){
+            pass_value = ALLOC_FAIL;
             throw std::runtime_error("Cannot alloc information ");
         } 
         unsigned char *avio_ctx_buffer = nullptr;
@@ -34,39 +37,50 @@ void CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpe
             Pids.push_back(it->first);
             Pids.push_back(it->second);
         }
-        if(_ifmtInital(nullptr,Pids)<0)
+        if(_ifmtInital(nullptr,Pids)<0){
+            pass_value = INPUT_STREAM_FAIL;
             throw std::runtime_error("Cannot find stream information");
+        }
         int i = 0;
         for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
-            std::string outputfile(output);
-            if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0)
+            std::string outputfile(std::to_string(i)+output);
+            if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0){
+             pass_value = OUTPUT_STREAM_FAIL;
              throw std::runtime_error("Cannot find stream information ");
+            }
         }
+        return pass_value;
     }catch(std::exception const& e) {
         std::cout << "Exception: " << e.what() ;
+        return pass_value;
     } 
 }
 int CtxWrapper::SetConfig(const std::string& inputfile,const std::string& output,const std::vector<std::pair<int,int> >& pid_pair
                             ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
                            , std::vector<AVFormatContext*>& ofmt_list ){
+    Error_code pass_value(TASK_DOWN);
     try{
         std::vector<int> Pids;
         for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
             Pids.push_back(it->first);
             Pids.push_back(it->second);
         }
-        if(_ifmtInital(inputfile.c_str(),Pids)<0)
+        if(_ifmtInital(inputfile.c_str(),Pids)<0){
+            pass_value = INPUT_STREAM_FAIL;
             throw std::runtime_error("Cannot find stream information");
+        }
         int i = 0;
         for(auto it= pid_pair.begin();it!=pid_pair.end();++it){
             std::string outputfile= output+std::to_string(i)+".m3u8";
-            if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0)
+            if(_ofmtInital(outputfile,it->first,it->second,Pid_Obj,ofmt_list)<0){
+             pass_value = OUTPUT_STREAM_FAIL;
              throw std::runtime_error("Cannot find stream information ");
+            }
         }
-        return 0;
+        return pass_value;
     }catch(std::exception const& e) {
         std::cout << "Exception: " << e.what() ;
-        return -1;
+        return pass_value;
     } 
 }
 int CtxWrapper::_ifmtInital(const char* filename,const std::vector<int>& pids){
