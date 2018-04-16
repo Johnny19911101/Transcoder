@@ -19,6 +19,8 @@ static const char* Transcode_method_names[] = {
   "/transcode_rpc.Transcode/setchannel",
   "/transcode_rpc.Transcode/avio",
   "/transcode_rpc.Transcode/process",
+  "/transcode_rpc.Transcode/state",
+  "/transcode_rpc.Transcode/stop",
 };
 
 std::unique_ptr< Transcode::Stub> Transcode::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -31,6 +33,8 @@ Transcode::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_setchannel_(Transcode_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_avio_(Transcode_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_process_(Transcode_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_state_(Transcode_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_stop_(Transcode_method_names[4], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status Transcode::Stub::setchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::transcode_rpc::channel_list* response) {
@@ -69,6 +73,30 @@ Transcode::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::transcode_rpc::StateReply>::Create(channel_.get(), cq, rpcmethod_process_, context, request, false);
 }
 
+::grpc::Status Transcode::Stub::state(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_state_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* Transcode::Stub::AsyncstateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::transcode_rpc::StateReply>::Create(channel_.get(), cq, rpcmethod_state_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* Transcode::Stub::PrepareAsyncstateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::transcode_rpc::StateReply>::Create(channel_.get(), cq, rpcmethod_state_, context, request, false);
+}
+
+::grpc::Status Transcode::Stub::stop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_stop_, context, request, response);
+}
+
+::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* Transcode::Stub::AsyncstopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::transcode_rpc::StateReply>::Create(channel_.get(), cq, rpcmethod_stop_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* Transcode::Stub::PrepareAsyncstopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::transcode_rpc::StateReply>::Create(channel_.get(), cq, rpcmethod_stop_, context, request, false);
+}
+
 Transcode::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       Transcode_method_names[0],
@@ -85,6 +113,16 @@ Transcode::Service::Service() {
       ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< Transcode::Service, ::transcode_rpc::empty, ::transcode_rpc::StateReply>(
           std::mem_fn(&Transcode::Service::process), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Transcode_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Transcode::Service, ::transcode_rpc::empty, ::transcode_rpc::StateReply>(
+          std::mem_fn(&Transcode::Service::state), this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      Transcode_method_names[4],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< Transcode::Service, ::transcode_rpc::empty, ::transcode_rpc::StateReply>(
+          std::mem_fn(&Transcode::Service::stop), this)));
 }
 
 Transcode::Service::~Service() {
@@ -105,6 +143,20 @@ Transcode::Service::~Service() {
 }
 
 ::grpc::Status Transcode::Service::process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Transcode::Service::state(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status Transcode::Service::stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) {
   (void) context;
   (void) request;
   (void) response;

@@ -232,15 +232,18 @@ void AddDescriptorsImpl() {
       "lename\030\003 \001(\t\",\n\tavio_type\022\021\n\tinputtype\030\001"
       " \001(\005\022\014\n\004file\030\002 \001(\t\"/\n\nStateReply\022\r\n\005repl"
       "y\030\001 \001(\t\022\022\n\nerror_code\030\002 \001(\005\"\034\n\014channel_l"
-      "ist\022\014\n\004list\030\001 \001(\t\"\007\n\005empty2\312\001\n\tTranscode"
+      "ist\022\014\n\004list\030\001 \001(\t\"\007\n\005empty2\301\002\n\tTranscode"
       "\022@\n\nsetchannel\022\023.transcode_rpc.PIDS\032\033.tr"
       "anscode_rpc.channel_list\"\000\022=\n\004avio\022\030.tra"
       "nscode_rpc.avio_type\032\031.transcode_rpc.Sta"
       "teReply\"\000\022<\n\007process\022\024.transcode_rpc.emp"
-      "ty\032\031.transcode_rpc.StateReply\"\000b\006proto3"
+      "ty\032\031.transcode_rpc.StateReply\"\000\022:\n\005state"
+      "\022\024.transcode_rpc.empty\032\031.transcode_rpc.S"
+      "tateReply\"\000\0229\n\004stop\022\024.transcode_rpc.empt"
+      "y\032\031.transcode_rpc.StateReply\"\000b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 439);
+      descriptor, 558);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "transcode_rpc.proto", &protobuf_RegisterTypes);
 }

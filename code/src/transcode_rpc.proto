@@ -18,9 +18,11 @@ package transcode_rpc;
 
 // The greeting service definition.
 service Transcode {
-  rpc setchannel (PIDS) returns (channel_list) {}
+  rpc setchannel (PIDS) returns (channel_list){}
   rpc avio(avio_type) returns(StateReply){}
   rpc process(empty) returns(StateReply){}
+  rpc state(empty) returns(StateReply){} 
+  rpc stop(empty) returns(StateReply){}
 }
 
 // The request message containing the user's name.

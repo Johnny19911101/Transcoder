@@ -58,3 +58,13 @@ grpc::Status ServiceImpl::process(grpc::ServerContext* context, const transcode_
     reply->set_reply(_trans->ReturnStateName());
     return grpc::Status::OK;
 }
+grpc::Status ServiceImpl::state(grpc::ServerContext* context, const transcode_rpc::empty* request,transcode_rpc::StateReply* reply)  {
+    reply->set_reply(_trans->ReturnStateName());
+    return grpc::Status::OK;
+}
+grpc::Status ServiceImpl::stop(grpc::ServerContext* context, const transcode_rpc::empty* request,transcode_rpc::StateReply* reply)  {
+    int i=_trans->StopProcess();
+    reply->set_error_code(i);
+    reply->set_reply(_trans->ReturnStateName());
+    return grpc::Status::OK;
+}
