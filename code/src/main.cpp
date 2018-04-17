@@ -39,6 +39,7 @@ static void test2(){
 int main(){
 
     RunServer();
+    
     return 0;
 
 }

@@ -16,11 +16,9 @@ add_executable(Transcode ${Src_file}/main.cpp ${Src_file}/Audio.cpp
                      ${Src_file}/TransState.cpp  ${Src_file}/CtxWrapper.cpp
                      ${Src_file}/transcode_rpc.grpc.pb.cc ${Src_file}/transcode_rpc.pb.cc 
             )
-add_executable(Client ${Src_file}/Client.cpp  
-            ${Src_file}/transcode_rpc.grpc.pb.cc ${Src_file}/transcode_rpc.pb.cc
-)
-set(Tran_lib avformat avfilter avcodec swresample swscale avutil avdevice z m pthread x264 fdk-aac postproc va dl vdpau X11 va-drm va-x11 protobuf grpc grpc++)
+set(Tran_lib avformat avfilter avcodec swresample swscale avutil avdevice z m x264 fdk-aac postproc va dl vdpau X11 va-drm va-x11)
 target_link_libraries(Transcode ${Tran_lib})
 target_link_libraries(Transcode pthread)
-target_link_libraries(Client  protobuf grpc grpc++ gpr grpc_unsecure grpc++_unsecure)
-target_link_libraries(Client pthread)
+target_link_libraries(Transcode protobuf)
+target_link_libraries(Transcode grpc grpc++)
+
