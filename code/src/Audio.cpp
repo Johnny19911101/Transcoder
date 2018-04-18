@@ -142,8 +142,6 @@ int Audio::AudioDecode(AVPacket* input_packet)
 {
     /* Packet used for temporary storage. */
     try{
-        _pts = input_packet->pts;
-        _dts = input_packet->dts;
         converted_input_samples = NULL;     
         int error;
         _decode_frame = NULL;
@@ -291,8 +289,9 @@ void Audio::FlushEncoder(){
 }
 int  Audio::Flow(AVPacket* packet){
     try{
-         const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
-        long double real_time=(double)(packet->pts/packet->duration)*((double)_input_stream->codec->frame_size/(double)_input_stream->codec->sample_rate);
+        const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
+        int64_t revised =((packet->pts-_start_time)<0?0:(packet->pts-_start_time));
+        long double real_time=(double)((revised)/packet->duration)*((double)_input_stream->codec->frame_size/(double)_input_stream->codec->sample_rate);
         int64_t  _now_pts(real_time*_ofmt_ctx->streams[_audio_index]->codec->sample_rate*_packet_duration/output_frame_size);       
         do{
             int decoded = 0;     
@@ -300,7 +299,7 @@ int  Audio::Flow(AVPacket* packet){
                 int ret = AudioDecode(packet);
                 decoded = FFMIN(ret,packet->size);
                 if(ret < 0){
-                    throw std::runtime_error( "Could not decode frame in 307");
+                    throw std::runtime_error( "Could not decode frame in line 307");
                 }
             }
             while (av_audio_fifo_size(_fifo) >= output_frame_size){
@@ -324,5 +323,7 @@ void Audio::CleanUp(){
     if (_fifo)
         av_audio_fifo_free(_fifo);
     swr_free(&_resample_context);
-    
+}
+void Audio::SetTime(int64_t pts){
+    _start_time = pts;
 }

@@ -137,7 +137,7 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
         AVStream *out_stream = nullptr,*in_stream = nullptr;
         AVCodecContext *dec_ctx =nullptr, *enc_ctx = nullptr;
         AVCodec *encoder = nullptr;
-        int64_t audio_starttime = 0,dts_starttime=0;
+        int64_t video_starttime = 0;
         int stream_count=0,ret;
         std::shared_ptr<Audio> Pid_audio = std::make_shared<Audio>();
         std::shared_ptr<Video>  Pid_video=std::make_shared<Video>();
@@ -155,12 +155,11 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                     _videoEncoder(&enc_ctx,dec_ctx,&encoder);   
                     Pid_video -> SetTool(_ifmt_ctx->streams[i],stream_count,ofmt_ctx); 
                     Pid_Obj.insert(std::make_pair(i,Pid_video));
+                    video_starttime = _ifmt_ctx->streams[i]->start_time;
                 }     
                 else if(dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO){
                    _audioEncoder(&enc_ctx,dec_ctx,&encoder); 
                     Pid_audio -> SetTool(_ifmt_ctx->streams[i],stream_count,ofmt_ctx);
-                    audio_starttime = _ifmt_ctx->streams[i]->start_time;
-                    dts_starttime =  _ifmt_ctx->streams[i]->first_dts;
                     Pid_Obj.insert(std::make_pair(i,Pid_audio));
                 }else{
                     throw std::runtime_error("pid not video or audio\n");
@@ -176,6 +175,8 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                 out_stream->time_base = in_stream->time_base;
                 out_stream->codec = enc_ctx;
                 stream_count++;      
+                Pid_audio->SetTime(video_starttime);//為了切齊video跟audio且讓影片從零開始
+                Pid_video->SetTime(video_starttime);
             }
         }     
         _option(ofmt_ctx);

@@ -6,6 +6,7 @@ namespace Noovo{
 
     class CtxWrapper 
     {
+    friend class Transcoder;
     public:
         CtxWrapper();
         ~CtxWrapper();

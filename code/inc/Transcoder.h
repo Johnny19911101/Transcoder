@@ -17,6 +17,7 @@ namespace Noovo{
         std::string ReturnStateName();
         std::thread Thread_process();
         int StopProcess();//This funtcion will automatically Cleanup ,so dont cleanup at other thread again
+        void WriteEnd();
     private:      
         static std::unique_ptr<Transcoder> _instance;
         static std::once_flag _transcoder_flag;

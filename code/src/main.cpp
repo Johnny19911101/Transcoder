@@ -58,15 +58,16 @@ static void test2(){
 }
 static void test3(){
    Transcoder * test = Transcoder::Instance();
-   std::vector<std::pair<int,int>> t{std::make_pair(256,257)};
-   test->SetConfig("/home/johnny/tiral_go.ts","File",t);
+   std::vector<std::pair<int,int>> t{std::make_pair(3042,3041)};
+   test->SetConfig("/home/johnny/test.ts","File",t);
    test->Process();
+   test->WriteEnd();
 }
 
 int main(){
 
-    RunServer();
-   
+  //  RunServer();
+    test3();   
     return 0;
 
 }

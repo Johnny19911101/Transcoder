@@ -34,6 +34,7 @@ namespace Noovo{
     public:
         virtual ~Stream(){};
         virtual void SetTool(AVStream*,int,AVFormatContext*)=0;
+        virtual void SetTime(int64_t)=0;
         virtual void FlushEncoder()=0;
         virtual int Flow(AVPacket*)=0;
         virtual void Codecname()=0;

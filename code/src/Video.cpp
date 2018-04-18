@@ -12,6 +12,9 @@ void Video::SetTool(AVStream* input_stream,int outputindex ,AVFormatContext* ofm
     _video_index = outputindex;
     _ofmt_ctx = ofmt_ctx;
 }
+void Video::SetTime(int64_t start_pts){
+    _start_time = start_pts;
+}
 int Video::VideoDecoder(AVPacket* packet){
     try{
 
@@ -96,7 +99,10 @@ void Video::FlushEncoder(){
         ret = av_interleaved_write_frame(_ofmt_ctx, &enc_pkt);
         av_free_packet(&enc_pkt);
     }
-        
+}
+void Video::_resetpts(AVPacket* packet){
+    packet->pts = packet->pts-_start_time;
+    packet->dts = packet->dts-_start_time;
 }
 int Video::TranscodeFlow(AVPacket* packet){
     AVPacket enc;
@@ -104,6 +110,7 @@ int Video::TranscodeFlow(AVPacket* packet){
         av_init_packet(&enc);
         enc.data = NULL;
         enc.size = 0;
+        _resetpts(packet);
         int ret = VideoDecoder(packet);
         if(ret < 0){           
             throw std::runtime_error("Error decodeing packet in function TranscodeFlow");
