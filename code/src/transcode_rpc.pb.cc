@@ -176,7 +176,6 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::transcode_rpc::StateReply, reply_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::transcode_rpc::StateReply, error_code_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::transcode_rpc::channel_list, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -193,8 +192,8 @@ static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROT
   { 0, -1, sizeof(::transcode_rpc::PIDS)},
   { 8, -1, sizeof(::transcode_rpc::avio_type)},
   { 15, -1, sizeof(::transcode_rpc::StateReply)},
-  { 22, -1, sizeof(::transcode_rpc::channel_list)},
-  { 28, -1, sizeof(::transcode_rpc::empty)},
+  { 21, -1, sizeof(::transcode_rpc::channel_list)},
+  { 27, -1, sizeof(::transcode_rpc::empty)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -230,20 +229,20 @@ void AddDescriptorsImpl() {
       "\n\023transcode_rpc.proto\022\rtranscode_rpc\"6\n\004"
       "PIDS\022\r\n\005video\030\001 \001(\005\022\r\n\005audio\030\002 \001(\005\022\020\n\010fi"
       "lename\030\003 \001(\t\",\n\tavio_type\022\021\n\tinputtype\030\001"
-      " \001(\005\022\014\n\004file\030\002 \001(\t\"/\n\nStateReply\022\r\n\005repl"
-      "y\030\001 \001(\t\022\022\n\nerror_code\030\002 \001(\005\"\034\n\014channel_l"
-      "ist\022\014\n\004list\030\001 \001(\t\"\007\n\005empty2\301\002\n\tTranscode"
-      "\022@\n\nsetchannel\022\023.transcode_rpc.PIDS\032\033.tr"
-      "anscode_rpc.channel_list\"\000\022=\n\004avio\022\030.tra"
-      "nscode_rpc.avio_type\032\031.transcode_rpc.Sta"
-      "teReply\"\000\022<\n\007process\022\024.transcode_rpc.emp"
-      "ty\032\031.transcode_rpc.StateReply\"\000\022:\n\005state"
+      " \001(\005\022\014\n\004file\030\002 \001(\t\"\033\n\nStateReply\022\r\n\005repl"
+      "y\030\001 \001(\t\"\034\n\014channel_list\022\014\n\004list\030\001 \001(\t\"\007\n"
+      "\005empty2\301\002\n\tTranscode\022@\n\nSetchannel\022\023.tra"
+      "nscode_rpc.PIDS\032\033.transcode_rpc.channel_"
+      "list\"\000\022=\n\004Avio\022\030.transcode_rpc.avio_type"
+      "\032\031.transcode_rpc.StateReply\"\000\022<\n\007Process"
       "\022\024.transcode_rpc.empty\032\031.transcode_rpc.S"
-      "tateReply\"\000\0229\n\004stop\022\024.transcode_rpc.empt"
-      "y\032\031.transcode_rpc.StateReply\"\000b\006proto3"
+      "tateReply\"\000\022:\n\005State\022\024.transcode_rpc.emp"
+      "ty\032\031.transcode_rpc.StateReply\"\000\0229\n\004Stop\022"
+      "\024.transcode_rpc.empty\032\031.transcode_rpc.St"
+      "ateReply\"\000b\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 558);
+      descriptor, 538);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "transcode_rpc.proto", &protobuf_RegisterTypes);
 }
@@ -899,7 +898,6 @@ void StateReply::InitAsDefaultInstance() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int StateReply::kReplyFieldNumber;
-const int StateReply::kErrorCodeFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 StateReply::StateReply()
@@ -919,13 +917,11 @@ StateReply::StateReply(const StateReply& from)
   if (from.reply().size() > 0) {
     reply_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.reply_);
   }
-  error_code_ = from.error_code_;
   // @@protoc_insertion_point(copy_constructor:transcode_rpc.StateReply)
 }
 
 void StateReply::SharedCtor() {
   reply_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  error_code_ = 0;
   _cached_size_ = 0;
 }
 
@@ -968,7 +964,6 @@ void StateReply::Clear() {
   (void) cached_has_bits;
 
   reply_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  error_code_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -992,20 +987,6 @@ bool StateReply::MergePartialFromCodedStream(
             this->reply().data(), static_cast<int>(this->reply().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
             "transcode_rpc.StateReply.reply"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // int32 error_code = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &error_code_)));
         } else {
           goto handle_unusual;
         }
@@ -1048,11 +1029,6 @@ void StateReply::SerializeWithCachedSizes(
       1, this->reply(), output);
   }
 
-  // int32 error_code = 2;
-  if (this->error_code() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->error_code(), output);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -1078,11 +1054,6 @@ void StateReply::SerializeWithCachedSizes(
         1, this->reply(), target);
   }
 
-  // int32 error_code = 2;
-  if (this->error_code() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->error_code(), target);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -1105,13 +1076,6 @@ size_t StateReply::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->reply());
-  }
-
-  // int32 error_code = 2;
-  if (this->error_code() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->error_code());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -1147,9 +1111,6 @@ void StateReply::MergeFrom(const StateReply& from) {
 
     reply_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.reply_);
   }
-  if (from.error_code() != 0) {
-    set_error_code(from.error_code());
-  }
 }
 
 void StateReply::CopyFrom(const ::google::protobuf::Message& from) {
@@ -1177,7 +1138,6 @@ void StateReply::Swap(StateReply* other) {
 void StateReply::InternalSwap(StateReply* other) {
   using std::swap;
   reply_.Swap(&other->reply_);
-  swap(error_code_, other->error_code_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
   swap(_cached_size_, other->_cached_size_);
 }

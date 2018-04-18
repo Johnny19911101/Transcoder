@@ -28,9 +28,20 @@ func main() {
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.Setchannel(ctx, &pb.PIDS{Video: 0x100, Audio: 0x110, Filename: "test"})
+	r, err := c.Setchannel(ctx, &pb.PIDS{Video: 256, Audio: 257, Filename: "test"})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
 	log.Printf("Greeting: %s", r.List)
+	y, err := c.Avio(ctx, &pb.AvioType{Inputtype: 1, File: "/home/johnny/tiral_go.ts"})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("State: %s", y.Reply)
+	x, err := c.Process(ctx, &pb.Empty{})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", x.Reply)
+
 }

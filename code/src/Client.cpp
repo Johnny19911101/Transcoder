@@ -77,8 +77,9 @@ int main(int argc, char** argv) {
   // localhost at port 50051). We indicate that the channel isn't authenticated
   // (use of InsecureChannelCredentials()).
   GreeterClient greeter(grpc::CreateChannel(
-      "localhost:50053", grpc::InsecureChannelCredentials()));
+      "localhost:50051", grpc::InsecureChannelCredentials()));
   std::string user("world");
+  std::cout <<"here"<<std::endl;
   std::string reply = greeter.Transcode_Avio(user);
   std::cout << "Greeter received: " << reply << std::endl;
 

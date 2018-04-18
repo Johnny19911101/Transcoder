@@ -412,18 +412,11 @@ class StateReply : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::std::string* release_reply();
   void set_allocated_reply(::std::string* reply);
 
-  // int32 error_code = 2;
-  void clear_error_code();
-  static const int kErrorCodeFieldNumber = 2;
-  ::google::protobuf::int32 error_code() const;
-  void set_error_code(::google::protobuf::int32 value);
-
   // @@protoc_insertion_point(class_scope:transcode_rpc.StateReply)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr reply_;
-  ::google::protobuf::int32 error_code_;
   mutable int _cached_size_;
   friend struct ::protobuf_transcode_5frpc_2eproto::TableStruct;
   friend void ::protobuf_transcode_5frpc_2eproto::InitDefaultsStateReplyImpl();
@@ -845,20 +838,6 @@ inline void StateReply::set_allocated_reply(::std::string* reply) {
   }
   reply_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), reply);
   // @@protoc_insertion_point(field_set_allocated:transcode_rpc.StateReply.reply)
-}
-
-// int32 error_code = 2;
-inline void StateReply::clear_error_code() {
-  error_code_ = 0;
-}
-inline ::google::protobuf::int32 StateReply::error_code() const {
-  // @@protoc_insertion_point(field_get:transcode_rpc.StateReply.error_code)
-  return error_code_;
-}
-inline void StateReply::set_error_code(::google::protobuf::int32 value) {
-  
-  error_code_ = value;
-  // @@protoc_insertion_point(field_set:transcode_rpc.StateReply.error_code)
 }
 
 // -------------------------------------------------------------------

@@ -49,109 +49,109 @@ class Transcode final {
   class StubInterface {
    public:
     virtual ~StubInterface() {}
-    virtual ::grpc::Status setchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::transcode_rpc::channel_list* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>> Asyncsetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>>(AsyncsetchannelRaw(context, request, cq));
+    virtual ::grpc::Status Setchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::transcode_rpc::channel_list* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>> AsyncSetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>>(AsyncSetchannelRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>> PrepareAsyncsetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>>(PrepareAsyncsetchannelRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>> PrepareAsyncSetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>>(PrepareAsyncSetchannelRaw(context, request, cq));
     }
-    virtual ::grpc::Status avio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::transcode_rpc::StateReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> Asyncavio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncavioRaw(context, request, cq));
+    virtual ::grpc::Status Avio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::transcode_rpc::StateReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> AsyncAvio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncAvioRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncavio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncavioRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncAvio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncAvioRaw(context, request, cq));
     }
-    virtual ::grpc::Status process(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> Asyncprocess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncprocessRaw(context, request, cq));
+    virtual ::grpc::Status Process(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> AsyncProcess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncProcessRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncprocess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncprocessRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncProcess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncProcessRaw(context, request, cq));
     }
-    virtual ::grpc::Status state(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> Asyncstate(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncstateRaw(context, request, cq));
+    virtual ::grpc::Status State(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> AsyncState(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncStateRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncstate(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncstateRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncState(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncStateRaw(context, request, cq));
     }
-    virtual ::grpc::Status stop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> Asyncstop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncstopRaw(context, request, cq));
+    virtual ::grpc::Status Stop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> AsyncStop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(AsyncStopRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncstop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncstopRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>> PrepareAsyncStop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>>(PrepareAsyncStopRaw(context, request, cq));
     }
   private:
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>* AsyncsetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>* PrepareAsyncsetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncavioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncavioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncprocessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncprocessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncstateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncstateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncstopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncstopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>* AsyncSetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::channel_list>* PrepareAsyncSetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncAvioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncAvioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncProcessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncProcessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncStateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncStateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* AsyncStopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::transcode_rpc::StateReply>* PrepareAsyncStopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
     Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel);
-    ::grpc::Status setchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::transcode_rpc::channel_list* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>> Asyncsetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>>(AsyncsetchannelRaw(context, request, cq));
+    ::grpc::Status Setchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::transcode_rpc::channel_list* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>> AsyncSetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>>(AsyncSetchannelRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>> PrepareAsyncsetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>>(PrepareAsyncsetchannelRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>> PrepareAsyncSetchannel(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>>(PrepareAsyncSetchannelRaw(context, request, cq));
     }
-    ::grpc::Status avio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::transcode_rpc::StateReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> Asyncavio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncavioRaw(context, request, cq));
+    ::grpc::Status Avio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::transcode_rpc::StateReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> AsyncAvio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncAvioRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncavio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncavioRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncAvio(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncAvioRaw(context, request, cq));
     }
-    ::grpc::Status process(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> Asyncprocess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncprocessRaw(context, request, cq));
+    ::grpc::Status Process(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> AsyncProcess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncProcessRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncprocess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncprocessRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncProcess(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncProcessRaw(context, request, cq));
     }
-    ::grpc::Status state(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> Asyncstate(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncstateRaw(context, request, cq));
+    ::grpc::Status State(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> AsyncState(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncStateRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncstate(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncstateRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncState(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncStateRaw(context, request, cq));
     }
-    ::grpc::Status stop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> Asyncstop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncstopRaw(context, request, cq));
+    ::grpc::Status Stop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::transcode_rpc::StateReply* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> AsyncStop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(AsyncStopRaw(context, request, cq));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncstop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncstopRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>> PrepareAsyncStop(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>>(PrepareAsyncStopRaw(context, request, cq));
     }
 
    private:
     std::shared_ptr< ::grpc::ChannelInterface> channel_;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>* AsyncsetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>* PrepareAsyncsetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncavioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncavioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncprocessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncprocessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncstateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncstateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncstopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncstopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
-    const ::grpc::internal::RpcMethod rpcmethod_setchannel_;
-    const ::grpc::internal::RpcMethod rpcmethod_avio_;
-    const ::grpc::internal::RpcMethod rpcmethod_process_;
-    const ::grpc::internal::RpcMethod rpcmethod_state_;
-    const ::grpc::internal::RpcMethod rpcmethod_stop_;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>* AsyncSetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::channel_list>* PrepareAsyncSetchannelRaw(::grpc::ClientContext* context, const ::transcode_rpc::PIDS& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncAvioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncAvioRaw(::grpc::ClientContext* context, const ::transcode_rpc::avio_type& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncProcessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncProcessRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncStateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncStateRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* AsyncStopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::transcode_rpc::StateReply>* PrepareAsyncStopRaw(::grpc::ClientContext* context, const ::transcode_rpc::empty& request, ::grpc::CompletionQueue* cq) override;
+    const ::grpc::internal::RpcMethod rpcmethod_Setchannel_;
+    const ::grpc::internal::RpcMethod rpcmethod_Avio_;
+    const ::grpc::internal::RpcMethod rpcmethod_Process_;
+    const ::grpc::internal::RpcMethod rpcmethod_State_;
+    const ::grpc::internal::RpcMethod rpcmethod_Stop_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -159,301 +159,301 @@ class Transcode final {
    public:
     Service();
     virtual ~Service();
-    virtual ::grpc::Status setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response);
-    virtual ::grpc::Status avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response);
-    virtual ::grpc::Status process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response);
-    virtual ::grpc::Status state(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response);
-    virtual ::grpc::Status stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response);
+    virtual ::grpc::Status Setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response);
+    virtual ::grpc::Status Avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response);
+    virtual ::grpc::Status Process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response);
+    virtual ::grpc::Status State(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response);
+    virtual ::grpc::Status Stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response);
   };
   template <class BaseClass>
-  class WithAsyncMethod_setchannel : public BaseClass {
+  class WithAsyncMethod_Setchannel : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_setchannel() {
+    WithAsyncMethod_Setchannel() {
       ::grpc::Service::MarkMethodAsync(0);
     }
-    ~WithAsyncMethod_setchannel() override {
+    ~WithAsyncMethod_Setchannel() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response) final override {
+    ::grpc::Status Setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requestsetchannel(::grpc::ServerContext* context, ::transcode_rpc::PIDS* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::channel_list>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestSetchannel(::grpc::ServerContext* context, ::transcode_rpc::PIDS* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::channel_list>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(0, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_avio : public BaseClass {
+  class WithAsyncMethod_Avio : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_avio() {
+    WithAsyncMethod_Avio() {
       ::grpc::Service::MarkMethodAsync(1);
     }
-    ~WithAsyncMethod_avio() override {
+    ~WithAsyncMethod_Avio() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requestavio(::grpc::ServerContext* context, ::transcode_rpc::avio_type* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestAvio(::grpc::ServerContext* context, ::transcode_rpc::avio_type* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_process : public BaseClass {
+  class WithAsyncMethod_Process : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_process() {
+    WithAsyncMethod_Process() {
       ::grpc::Service::MarkMethodAsync(2);
     }
-    ~WithAsyncMethod_process() override {
+    ~WithAsyncMethod_Process() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requestprocess(::grpc::ServerContext* context, ::transcode_rpc::empty* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestProcess(::grpc::ServerContext* context, ::transcode_rpc::empty* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_state : public BaseClass {
+  class WithAsyncMethod_State : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_state() {
+    WithAsyncMethod_State() {
       ::grpc::Service::MarkMethodAsync(3);
     }
-    ~WithAsyncMethod_state() override {
+    ~WithAsyncMethod_State() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status state(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status State(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requeststate(::grpc::ServerContext* context, ::transcode_rpc::empty* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestState(::grpc::ServerContext* context, ::transcode_rpc::empty* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_stop : public BaseClass {
+  class WithAsyncMethod_Stop : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_stop() {
+    WithAsyncMethod_Stop() {
       ::grpc::Service::MarkMethodAsync(4);
     }
-    ~WithAsyncMethod_stop() override {
+    ~WithAsyncMethod_Stop() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void Requeststop(::grpc::ServerContext* context, ::transcode_rpc::empty* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+    void RequestStop(::grpc::ServerContext* context, ::transcode_rpc::empty* request, ::grpc::ServerAsyncResponseWriter< ::transcode_rpc::StateReply>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(4, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_setchannel<WithAsyncMethod_avio<WithAsyncMethod_process<WithAsyncMethod_state<WithAsyncMethod_stop<Service > > > > > AsyncService;
+  typedef WithAsyncMethod_Setchannel<WithAsyncMethod_Avio<WithAsyncMethod_Process<WithAsyncMethod_State<WithAsyncMethod_Stop<Service > > > > > AsyncService;
   template <class BaseClass>
-  class WithGenericMethod_setchannel : public BaseClass {
+  class WithGenericMethod_Setchannel : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_setchannel() {
+    WithGenericMethod_Setchannel() {
       ::grpc::Service::MarkMethodGeneric(0);
     }
-    ~WithGenericMethod_setchannel() override {
+    ~WithGenericMethod_Setchannel() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response) final override {
+    ::grpc::Status Setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_avio : public BaseClass {
+  class WithGenericMethod_Avio : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_avio() {
+    WithGenericMethod_Avio() {
       ::grpc::Service::MarkMethodGeneric(1);
     }
-    ~WithGenericMethod_avio() override {
+    ~WithGenericMethod_Avio() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_process : public BaseClass {
+  class WithGenericMethod_Process : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_process() {
+    WithGenericMethod_Process() {
       ::grpc::Service::MarkMethodGeneric(2);
     }
-    ~WithGenericMethod_process() override {
+    ~WithGenericMethod_Process() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_state : public BaseClass {
+  class WithGenericMethod_State : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_state() {
+    WithGenericMethod_State() {
       ::grpc::Service::MarkMethodGeneric(3);
     }
-    ~WithGenericMethod_state() override {
+    ~WithGenericMethod_State() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status state(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status State(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_stop : public BaseClass {
+  class WithGenericMethod_Stop : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_stop() {
+    WithGenericMethod_Stop() {
       ::grpc::Service::MarkMethodGeneric(4);
     }
-    ~WithGenericMethod_stop() override {
+    ~WithGenericMethod_Stop() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_setchannel : public BaseClass {
+  class WithStreamedUnaryMethod_Setchannel : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_setchannel() {
+    WithStreamedUnaryMethod_Setchannel() {
       ::grpc::Service::MarkMethodStreamed(0,
-        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::PIDS, ::transcode_rpc::channel_list>(std::bind(&WithStreamedUnaryMethod_setchannel<BaseClass>::Streamedsetchannel, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::PIDS, ::transcode_rpc::channel_list>(std::bind(&WithStreamedUnaryMethod_Setchannel<BaseClass>::StreamedSetchannel, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_setchannel() override {
+    ~WithStreamedUnaryMethod_Setchannel() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response) final override {
+    ::grpc::Status Setchannel(::grpc::ServerContext* context, const ::transcode_rpc::PIDS* request, ::transcode_rpc::channel_list* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedsetchannel(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::PIDS,::transcode_rpc::channel_list>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedSetchannel(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::PIDS,::transcode_rpc::channel_list>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_avio : public BaseClass {
+  class WithStreamedUnaryMethod_Avio : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_avio() {
+    WithStreamedUnaryMethod_Avio() {
       ::grpc::Service::MarkMethodStreamed(1,
-        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::avio_type, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_avio<BaseClass>::Streamedavio, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::avio_type, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_Avio<BaseClass>::StreamedAvio, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_avio() override {
+    ~WithStreamedUnaryMethod_Avio() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Avio(::grpc::ServerContext* context, const ::transcode_rpc::avio_type* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedavio(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::avio_type,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedAvio(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::avio_type,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_process : public BaseClass {
+  class WithStreamedUnaryMethod_Process : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_process() {
+    WithStreamedUnaryMethod_Process() {
       ::grpc::Service::MarkMethodStreamed(2,
-        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::empty, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_process<BaseClass>::Streamedprocess, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::empty, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_Process<BaseClass>::StreamedProcess, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_process() override {
+    ~WithStreamedUnaryMethod_Process() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Process(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedprocess(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::empty,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedProcess(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::empty,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_state : public BaseClass {
+  class WithStreamedUnaryMethod_State : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_state() {
+    WithStreamedUnaryMethod_State() {
       ::grpc::Service::MarkMethodStreamed(3,
-        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::empty, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_state<BaseClass>::Streamedstate, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::empty, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_State<BaseClass>::StreamedState, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_state() override {
+    ~WithStreamedUnaryMethod_State() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status state(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status State(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedstate(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::empty,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedState(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::empty,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
-  class WithStreamedUnaryMethod_stop : public BaseClass {
+  class WithStreamedUnaryMethod_Stop : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_stop() {
+    WithStreamedUnaryMethod_Stop() {
       ::grpc::Service::MarkMethodStreamed(4,
-        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::empty, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_stop<BaseClass>::Streamedstop, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::StreamedUnaryHandler< ::transcode_rpc::empty, ::transcode_rpc::StateReply>(std::bind(&WithStreamedUnaryMethod_Stop<BaseClass>::StreamedStop, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_stop() override {
+    ~WithStreamedUnaryMethod_Stop() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
+    ::grpc::Status Stop(::grpc::ServerContext* context, const ::transcode_rpc::empty* request, ::transcode_rpc::StateReply* response) final override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     // replace default version of method with streamed unary
-    virtual ::grpc::Status Streamedstop(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::empty,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
+    virtual ::grpc::Status StreamedStop(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::transcode_rpc::empty,::transcode_rpc::StateReply>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_setchannel<WithStreamedUnaryMethod_avio<WithStreamedUnaryMethod_process<WithStreamedUnaryMethod_state<WithStreamedUnaryMethod_stop<Service > > > > > StreamedUnaryService;
+  typedef WithStreamedUnaryMethod_Setchannel<WithStreamedUnaryMethod_Avio<WithStreamedUnaryMethod_Process<WithStreamedUnaryMethod_State<WithStreamedUnaryMethod_Stop<Service > > > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_setchannel<WithStreamedUnaryMethod_avio<WithStreamedUnaryMethod_process<WithStreamedUnaryMethod_state<WithStreamedUnaryMethod_stop<Service > > > > > StreamedService;
+  typedef WithStreamedUnaryMethod_Setchannel<WithStreamedUnaryMethod_Avio<WithStreamedUnaryMethod_Process<WithStreamedUnaryMethod_State<WithStreamedUnaryMethod_Stop<Service > > > > > StreamedService;
 };
 
 }  // namespace transcode_rpc
