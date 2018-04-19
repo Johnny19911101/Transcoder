@@ -34,12 +34,13 @@ namespace Noovo{
     public:
         virtual ~Stream(){};
         virtual void SetTool(AVStream*,int,AVFormatContext*)=0;
-        virtual void SetTime(int64_t)=0;
+        virtual void SetTime(int64_t,int64_t)=0;
         virtual void FlushEncoder()=0;
         virtual int Flow(AVPacket*)=0;
         virtual void Codecname()=0;
         virtual void InitalTool()=0;
         virtual void CleanUp()=0;
+        virtual int64_t ReturnEndPoint()=0;
     };
 }
 

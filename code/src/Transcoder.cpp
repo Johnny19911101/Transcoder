@@ -93,6 +93,7 @@ void Transcoder::Process(){
     }  
     for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
         it->second->FlushEncoder();
+        std::cout<<it->second->ReturnEndPoint()<<std::endl;
     }
     for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
         it->second->CleanUp();
@@ -104,6 +105,7 @@ void Transcoder::WriteEnd(){
     for(auto it = _ofmt_list.begin();it!=_ofmt_list.end();++it){
         av_write_trailer(*it);
     }
+
 }
 void Transcoder::CleanUp(){
     std::lock_guard<std::mutex> temp_lock(_lock_process);	

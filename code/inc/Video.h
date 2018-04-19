@@ -13,9 +13,10 @@ namespace Noovo{
         virtual void FlushEncoder();
         virtual int Flow(AVPacket*);
         virtual void Codecname();
-        virtual void SetTime(int64_t);
+        virtual void SetTime(int64_t,int64_t);
         virtual void InitalTool();
         virtual void CleanUp(){};
+        virtual int64_t ReturnEndPoint();
         static int64_t ReturnAmount();
         static void ResetAmount();
         int TranscodeFlow(AVPacket*);
@@ -25,9 +26,9 @@ namespace Noovo{
         AVStream* _input_stream;
         AVStream* _output_stream;
         AVFormatContext* _ofmt_ctx;
-        int _got_frame;
+        int _got_frame,_duration;
         int _video_index = 0;
-        int64_t _start_time;
+        int64_t _start_time,_endpoint,_mux_pts;
         AVFrame* _decode_frame;
         bool _interlaced = true;
         int64_t last_correct_pts = 0;//用這個來修改pts小於0的overflow
@@ -36,6 +37,7 @@ namespace Noovo{
         int  VideoDecoder(AVPacket*);
         int Encode_write_frame(AVPacket*);
         void _resetpts(AVPacket*);
+        void _caluculateduration();
 
     };
 }

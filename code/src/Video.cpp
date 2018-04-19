@@ -12,8 +12,13 @@ void Video::SetTool(AVStream* input_stream,int outputindex ,AVFormatContext* ofm
     _video_index = outputindex;
     _ofmt_ctx = ofmt_ctx;
 }
-void Video::SetTime(int64_t start_pts){
+void Video::SetTime(int64_t start_pts,int64_t mux_pts){
     _start_time = start_pts;
+    _mux_pts=mux_pts;
+    _caluculateduration();
+}
+void Video::_caluculateduration(){
+    _duration = _ofmt_ctx->streams[_video_index]->time_base.den*av_q2d(_ofmt_ctx->streams[_video_index]->codec->time_base);
 }
 int Video::VideoDecoder(AVPacket* packet){
     try{
@@ -52,19 +57,24 @@ void Video::Codecname(){
 
 int Video::Encode_write_frame(AVPacket* enc_pkt) {
     try{
-        
         int ret;
         if(_got_frame){        
             _decode_frame->pict_type = AV_PICTURE_TYPE_NONE;
+          
             ret = avcodec_encode_video2(_ofmt_ctx->streams[_video_index]->codec,enc_pkt,_decode_frame, &_got_frame);
+
             av_frame_free(&_decode_frame);
             if (ret < 0)
                 throw std::runtime_error("Encoding failed");      
-            av_packet_rescale_ts(enc_pkt,
-                                 _ofmt_ctx->streams[_video_index]->codec->time_base,
-                                 _ofmt_ctx->streams[_video_index]->time_base);
     
             enc_pkt->stream_index = _video_index;
+            av_packet_rescale_ts(enc_pkt,
+                                _ofmt_ctx->streams[_video_index]->codec->time_base,
+                                _ofmt_ctx->streams[_video_index]->time_base);
+            
+            if(enc_pkt->pts!=AV_NOPTS_VALUE)
+                _endpoint=enc_pkt->pts+_duration;
+            enc_pkt->pts+=_mux_pts;
             ret = av_interleaved_write_frame(_ofmt_ctx, enc_pkt);
             if (ret < 0)
                 throw std::runtime_error("Write frame error");
@@ -94,7 +104,7 @@ void Video::FlushEncoder(){
             break;
         if (!_got_frame)
             break ;       
-         av_packet_rescale_ts(&enc_pkt, _ofmt_ctx->streams[_video_index]->codec->time_base, _ofmt_ctx->streams[_video_index]->time_base);
+        av_packet_rescale_ts(&enc_pkt, _ofmt_ctx->streams[_video_index]->codec->time_base, _ofmt_ctx->streams[_video_index]->time_base);
         enc_pkt.stream_index = 0;
         ret = av_interleaved_write_frame(_ofmt_ctx, &enc_pkt);
         av_free_packet(&enc_pkt);
@@ -188,6 +198,9 @@ AVFrame* Video::ReturnFrame(AVPacket *packet){
 }
 int64_t Video::ReturnAmount(){
     return _count_frames;
+}
+int64_t Video::ReturnEndPoint(){
+    return _endpoint;
 }
 void Video::ResetAmount(){
     _count_frames = 0;

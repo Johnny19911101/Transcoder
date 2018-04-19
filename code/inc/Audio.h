@@ -19,14 +19,15 @@ namespace Noovo{
         virtual void Codecname();
         virtual void InitalTool();
         virtual void CleanUp();
-        virtual void SetTime(int64_t);
+        virtual void SetTime(int64_t,int64_t);
+        virtual int64_t ReturnEndPoint();
     private:
         AVStream* _input_stream;
         AVFormatContext* _ofmt_ctx;
         AVFrame* _decode_frame;
         int _data_present;
         int _audio_index;
-        int64_t _start_time;
+        int64_t _start_time,_mux_pts,_endpoint;
         int _packet_duration;
         SwrContext* _resample_context;
         uint8_t **converted_input_samples ;

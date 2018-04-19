@@ -292,7 +292,8 @@ int  Audio::Flow(AVPacket* packet){
         const int output_frame_size = _ofmt_ctx->streams[_audio_index]->codec->frame_size;
         int64_t revised =((packet->pts-_start_time)<0?0:(packet->pts-_start_time));
         long double real_time=(double)((revised)/packet->duration)*((double)_input_stream->codec->frame_size/(double)_input_stream->codec->sample_rate);
-        int64_t  _now_pts(real_time*_ofmt_ctx->streams[_audio_index]->codec->sample_rate*_packet_duration/output_frame_size);       
+        int64_t _now_pts=(real_time*_ofmt_ctx->streams[_audio_index]->codec->sample_rate*_packet_duration/output_frame_size);       
+        _now_pts+=_mux_pts;
         do{
             int decoded = 0;     
             if (av_audio_fifo_size(_fifo) < output_frame_size) {   
@@ -308,6 +309,7 @@ int  Audio::Flow(AVPacket* packet){
                     throw std::runtime_error( "Could not encode frame in 316");
                 }
                 _now_pts += _packet_duration;
+                _endpoint=_now_pts;
             }
             packet->data += decoded;
             packet->size -= decoded;
@@ -324,6 +326,10 @@ void Audio::CleanUp(){
         av_audio_fifo_free(_fifo);
     swr_free(&_resample_context);
 }
-void Audio::SetTime(int64_t pts){
+void Audio::SetTime(int64_t pts,int64_t muxpts){
     _start_time = pts;
+    _mux_pts=muxpts;
+}
+int64_t Audio::ReturnEndPoint(){
+    return _endpoint;
 }

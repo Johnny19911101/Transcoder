@@ -175,10 +175,11 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                 out_stream->time_base = in_stream->time_base;
                 out_stream->codec = enc_ctx;
                 stream_count++;      
-                Pid_audio->SetTime(video_starttime);//為了切齊video跟audio且讓影片從零開始
-                Pid_video->SetTime(video_starttime);
+
             }
         }     
+        Pid_audio->SetTime(video_starttime,0);//為了切齊video跟audio且讓影片從零開始
+        Pid_video->SetTime(video_starttime,0);
         _option(ofmt_ctx);
         av_dump_format(ofmt_ctx, 0, filename.c_str(),1);
         _ofmtheader(ofmt_ctx,filename);
