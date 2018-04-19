@@ -61,6 +61,10 @@ static void test3(){
    std::vector<std::pair<int,int>> t{std::make_pair(3042,3041)};
    test->SetConfig("/home/johnny/test.ts","File",t);
    test->Process();
+   test->Switch(std::make_pair(256,257),0,std::string("/home/johnny/tiral_go1.ts"));
+   test->Process();
+      test->Switch(std::make_pair(3041,3042),0,std::string("/home/johnny/test.ts"));
+   test->Process();
    test->WriteEnd();
 }
 

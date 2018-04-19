@@ -20,7 +20,7 @@ CtxWrapper::~CtxWrapper(){
 int CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpeg_callback)(void *opaque, uint8_t *buf, int buf_size)
                         ,const std::string& output,const std::vector<std::pair<int,int> >& pid_pair
                         ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
-                        , std::vector<AVFormatContext*>& ofmt_list){
+                        , std::vector<std::shared_ptr<Ofmt_list>>& ofmt_list){
     Error_code pass_value(TASK_DOWN);
     try{
         if(!(_ifmt_ctx = avformat_alloc_context())){
@@ -57,7 +57,7 @@ int CtxWrapper::SetAvio(int avio_ctx_buffer_size,void *call_back_var,int(*ffmpeg
 }
 int CtxWrapper::SetConfig(const std::string& inputfile,const std::string& output,const std::vector<std::pair<int,int> >& pid_pair
                             ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
-                           , std::vector<AVFormatContext*>& ofmt_list ){
+                           , std::vector<std::shared_ptr<Ofmt_list>>& ofmt_list ){
     Error_code pass_value(TASK_DOWN);
     try{
         std::vector<int> Pids;
@@ -131,8 +131,9 @@ void CtxWrapper::_findDecoder(int streamid){
 }
 int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_sec
                             ,std::unordered_map<int,std::shared_ptr<Stream> >& Pid_Obj
-                            ,std::vector<AVFormatContext*>& ofmt_list){
+                            ,std::vector<std::shared_ptr<Ofmt_list>>& ofmt_list){
     AVFormatContext *ofmt_ctx = nullptr;
+    std::shared_ptr<Ofmt_list> _ofmt =std::make_shared<Ofmt_list>(); 
     try{
         AVStream *out_stream = nullptr,*in_stream = nullptr;
         AVCodecContext *dec_ctx =nullptr, *enc_ctx = nullptr;
@@ -156,11 +157,13 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                     Pid_video -> SetTool(_ifmt_ctx->streams[i],stream_count,ofmt_ctx); 
                     Pid_Obj.insert(std::make_pair(i,Pid_video));
                     video_starttime = _ifmt_ctx->streams[i]->start_time;
+                    _ofmt->video_index = stream_count;
                 }     
                 else if(dec_ctx->codec_type == AVMEDIA_TYPE_AUDIO){
                    _audioEncoder(&enc_ctx,dec_ctx,&encoder); 
                     Pid_audio -> SetTool(_ifmt_ctx->streams[i],stream_count,ofmt_ctx);
                     Pid_Obj.insert(std::make_pair(i,Pid_audio));
+                    _ofmt->audio_index = stream_count;
                 }else{
                     throw std::runtime_error("pid not video or audio\n");
                 }
@@ -175,7 +178,6 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
                 out_stream->time_base = in_stream->time_base;
                 out_stream->codec = enc_ctx;
                 stream_count++;      
-
             }
         }     
         Pid_audio->SetTime(video_starttime,0);//為了切齊video跟audio且讓影片從零開始
@@ -183,7 +185,8 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
         _option(ofmt_ctx);
         av_dump_format(ofmt_ctx, 0, filename.c_str(),1);
         _ofmtheader(ofmt_ctx,filename);
-        ofmt_list.push_back(ofmt_ctx); 
+        _ofmt->ofmt_ctx=ofmt_ctx;
+        ofmt_list.push_back(_ofmt); 
         return 0;       
     }catch(std::exception const& e) {
         std::cout << "Exception: " << e.what() ;
@@ -262,6 +265,7 @@ void CtxWrapper::_ifmtclean(){
         }
     }
     avformat_close_input(&_ifmt_ctx);
+    _ifmt_ctx = nullptr;
 }
 
 void CtxWrapper::_oneofmtclean(AVFormatContext** ofmt_ctx){
@@ -274,11 +278,41 @@ void CtxWrapper::_oneofmtclean(AVFormatContext** ofmt_ctx){
         avio_close((*ofmt_ctx)->pb);
     avformat_free_context(*ofmt_ctx);
 }
-void CtxWrapper::Cleanup(std::vector<AVFormatContext*>* ofmt_list){
+void CtxWrapper::Cleanup(std::vector<std::shared_ptr<Ofmt_list>> ofmt_list){
     _ifmtclean();
-    for(auto it = (*ofmt_list).begin();it !=(*ofmt_list).end();++it)  
-        _oneofmtclean(&*it);
+    for(auto it = ofmt_list.begin();it !=ofmt_list.end();++it)  
+        _oneofmtclean(&((*it)->ofmt_ctx));
 }
 AVFormatContext* CtxWrapper::GetIfmt(){
    return _ifmt_ctx;
+}
+void CtxWrapper::Switch(std::pair<int,int> Pairs,std::shared_ptr<Ofmt_list> ofmt_list,std::string inputfile
+                        ,int64_t muxpoint,std::unordered_map<int,std::shared_ptr<Stream>>& Pid_object){
+    try{   
+        _ifmtclean();
+        std::vector<int> Pids{Pairs.first,Pairs.second};
+        if(_ifmtInital(inputfile.c_str(),Pids)<0){
+            throw std::runtime_error("Cannot find stream information");
+        }
+        int64_t start_time;
+        std::shared_ptr<Audio> Pid_audio = std::make_shared<Audio>();
+        std::shared_ptr<Video> Pid_video= std::make_shared<Video>();
+        for (int i = 0; i <(_ifmt_ctx)->nb_streams; i++) {
+            if(find(Pids.begin(),Pids.end(),(_ifmt_ctx)->streams[i]->id) != Pids.end()){
+                if(_ifmt_ctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO){
+                    Pid_audio->SetTool(_ifmt_ctx->streams[i],ofmt_list->audio_index,ofmt_list->ofmt_ctx);
+                    Pid_object.insert(std::make_pair(i,Pid_audio));
+                }else if(_ifmt_ctx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO){
+                    Pid_video->SetTool(_ifmt_ctx->streams[i],ofmt_list->video_index,ofmt_list->ofmt_ctx);
+                    start_time=_ifmt_ctx->streams[i]->start_time;
+                    Pid_object.insert(std::make_pair(i,Pid_video));
+                }
+            }
+        }
+        Pid_audio->SetTime(start_time,muxpoint);
+        Pid_video->SetTime(start_time,muxpoint);
+    }catch(std::exception const& e) {
+        std::cout << "Exception: " << e.what() ;
+        _ifmtclean();
+    } 
 }

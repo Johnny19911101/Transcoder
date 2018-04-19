@@ -29,8 +29,7 @@ extern "C"{
 }
 
 namespace Noovo{
-    class Stream
-    {
+    class Stream{
     public:
         virtual ~Stream(){};
         virtual void SetTool(AVStream*,int,AVFormatContext*)=0;
@@ -41,6 +40,14 @@ namespace Noovo{
         virtual void InitalTool()=0;
         virtual void CleanUp()=0;
         virtual int64_t ReturnEndPoint()=0;
+    };
+    class Ofmt_list{
+    public:
+        Ofmt_list():ofmt_ctx(nullptr),video_index(-1),audio_index(-1){};
+        ~Ofmt_list(){};
+        AVFormatContext* ofmt_ctx;
+        int video_index;
+        int audio_index;
     };
 }
 

@@ -92,18 +92,20 @@ void Transcoder::Process(){
         av_free_packet(&packet);//Need init ->unref ->free for one time or memory leak
     }  
     for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
-        it->second->FlushEncoder();
-        std::cout<<it->second->ReturnEndPoint()<<std::endl;
+       // it->second->FlushEncoder();
+        _endpoint=((_endpoint > it->second->ReturnEndPoint())?_endpoint:it->second->ReturnEndPoint());
+        //要在改
     }
     for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
         it->second->CleanUp();
         it->second.reset();
     }
+    _pidObject.clear();
     _state->SetState(typeid(Status::Finished));
  }
 void Transcoder::WriteEnd(){
     for(auto it = _ofmt_list.begin();it!=_ofmt_list.end();++it){
-        av_write_trailer(*it);
+        av_write_trailer((*it)->ofmt_ctx);
     }
 
 }
@@ -112,7 +114,7 @@ void Transcoder::CleanUp(){
     /*mutex lock*/
     _state->SetState(typeid(Status::Reset));
     _wrapper->_ifmtclean();
-    _wrapper->Cleanup(&_ofmt_list);
+    _wrapper->Cleanup(_ofmt_list);
     _ofmt_list.clear();
     _pidObject.clear();
     _state->SetState(typeid(Status::Idle));
@@ -138,4 +140,7 @@ int Transcoder::StopProcess(){
 }
 std::thread Transcoder::Thread_process(){
     return std::thread(&Transcoder::Process,this);
+}
+void Transcoder::Switch(std::pair<int,int> pairs,int ofmt_index,std::string inputfile){
+    _wrapper->Switch(pairs,_ofmt_list[ofmt_index],inputfile,_endpoint,_pidObject);
 }

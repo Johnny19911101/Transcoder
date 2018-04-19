@@ -18,17 +18,19 @@ namespace Noovo{
         std::thread Thread_process();
         int StopProcess();//This funtcion will automatically Cleanup ,so dont cleanup at other thread again
         void WriteEnd();
+        void Switch(std::pair<int,int> pairs,int ofmt_index,std::string inputfile);
     private:      
         static std::unique_ptr<Transcoder> _instance;
         static std::once_flag _transcoder_flag;
         Transcoder();  
+        int64_t _endpoint=0;
         std::unique_ptr<Status> _state;
         std::shared_ptr<CtxWrapper> _wrapper;
         bool _turnoff;
         std::condition_variable _cleanup_done;
         std::mutex _lock_cleanup,_lock_process;
-        std::unordered_map<int,std::shared_ptr<Stream> > _pidObject;
-        std::vector<AVFormatContext*> _ofmt_list;
+        std::unordered_map<int,std::shared_ptr<Stream>> _pidObject;
+        std::vector<std::shared_ptr<Ofmt_list>> _ofmt_list;
     };
 }
 

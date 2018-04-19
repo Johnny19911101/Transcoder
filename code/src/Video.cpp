@@ -72,9 +72,10 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
                                 _ofmt_ctx->streams[_video_index]->codec->time_base,
                                 _ofmt_ctx->streams[_video_index]->time_base);
             
-            if(enc_pkt->pts!=AV_NOPTS_VALUE)
+            if(enc_pkt->pts!=AV_NOPTS_VALUE){
                 _endpoint=enc_pkt->pts+_duration;
-            enc_pkt->pts+=_mux_pts;
+            }
+          //  std::cout << "pts : "<<enc_pkt->pts<<"dts :"<<enc_pkt->dts<<std::endl;
             ret = av_interleaved_write_frame(_ofmt_ctx, enc_pkt);
             if (ret < 0)
                 throw std::runtime_error("Write frame error");
@@ -121,6 +122,7 @@ int Video::TranscodeFlow(AVPacket* packet){
         enc.data = NULL;
         enc.size = 0;
         _resetpts(packet);
+        packet->pts +=_mux_pts;
         int ret = VideoDecoder(packet);
         if(ret < 0){           
             throw std::runtime_error("Error decodeing packet in function TranscodeFlow");
