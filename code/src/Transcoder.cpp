@@ -1,8 +1,9 @@
 #include "Transcoder.h"
+
 #include "Stream.h"
 #include "Video.h"
 #include "Audio.h"
-//#include <unistd.h>
+#include "Adinsert.h"
 #define BUFFER_SIZE 188*100
 using namespace Noovo;
 std::unique_ptr<Transcoder> Transcoder::_instance;
@@ -138,11 +139,13 @@ int Transcoder::StopProcess(){
 void Transcoder::SwitchChannel(int buffer_size,void *callback_pointer,int(*read)(void *a, uint8_t *b, int c)
                     ,int ofmt_index,std::pair<int,int> pairs){
     try{   
+        Adinsert adinsert("ad001.ts");
         _turnoff = true;
         std::lock_guard<std::mutex> temp_lock(_lock_process);
-        _pidObject.clear();
-        _wrapper->Switch(2048,callback_pointer,read,pairs,_fmtwrapper_list[ofmt_index],_pidObject);
-        _turnoff = false;
+        std::thread adinset_thread = adinsert.Process_thread();
+//      _pidObject.clear();
+//      _wrapper->Switch(2048,callback_pointer,read,pairs,_fmtwrapper_list[ofmt_index],_pidObject);
+//        _turnoff = false;
         return 0;
     }catch(std::exception const& e) {
         std::cout << "Exception: " << e.what() ;

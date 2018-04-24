@@ -27,6 +27,7 @@ file(GLOB SOURCES
 	src/TransState.cpp
 	src/Transcoder.cpp
 	src/Video.cpp
+	src/Adinsert.cpp
 )
 include_directories(${CMAKE_SOURCE_DIR}/media_core/code/inc)
 #link_directories(${CMAKE_SOURCE_DIR}/../lib)
