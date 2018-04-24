@@ -29,18 +29,17 @@ namespace Noovo{
         const std::type_info* _info;
         std::type_index _index;
     };
-    class Status{
+    class TranscodeStatus {
     public:
         class Initial : public TransState{};
         class SetConfig : public TransState{};
-        class SetFailed : public TransState{};
         class SetConfigFinished : public TransState{};
         class Process : public TransState{};
         class Finished : public TransState{};
         class Reset : public TransState{};
         class Idle : public TransState{};
-        Status();
-		 ~Status();
+		TranscodeStatus();
+		 ~TranscodeStatus();
 		void Initialize();
 		void SetState(const std::type_index &state_index);
         std::string GetCurrentName();

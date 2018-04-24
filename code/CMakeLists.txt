@@ -1,23 +1,42 @@
 cmake_minimum_required (VERSION 2.6)
+message(${FFMPEG})
+#set(CMAKE_CXX_FLAGS "-pedantic-errors -DTIMER")
 project (Transcode)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ./bin)
-set(CMAKE_CXX_FLAGS "-pedantic-errors -DTIMER")
-set(CMAKE_C_FLAGS "-g")
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_BUILD_TYPE Debug)
-set(Src_file ${CMAKE_SOURCE_DIR}/src)
-include_directories(${CMAKE_SOURCE_DIR}/../include)
-include_directories(${CMAKE_SOURCE_DIR}/inc)
-include_directories(${CMAKE_SOURCE_DIR}/src)
-link_directories(${CMAKE_SOURCE_DIR}/../lib)
-add_executable(Transcode ${Src_file}/main.cpp ${Src_file}/Audio.cpp 
-                     ${Src_file}/RPCServer.cpp ${Src_file}/Timer.cpp
-                     ${Src_file}/Transcoder.cpp ${Src_file}/Video.cpp
-                     ${Src_file}/TransState.cpp  ${Src_file}/CtxWrapper.cpp
-                     ${Src_file}/transcode_rpc.grpc.pb.cc ${Src_file}/transcode_rpc.pb.cc 
-            )
-set(Tran_lib avformat avfilter avcodec swresample swscale avutil avdevice z m x264 fdk-aac postproc va dl vdpau X11 va-drm va-x11)
-target_link_libraries(Transcode ${Tran_lib})
-target_link_libraries(Transcode grpc grpc++ gpr grpc++_core_stats grpc_cronet grpc++_cronet grpc++_reflection grpc_unsecure)
-target_link_libraries(Transcode pthread z)
-target_link_libraries(Transcode protobuf)
+if(UNIX)
+	include(CheckCXXCompilerFlag)
+	CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
+	CHECK_CXX_COMPILER_FLAG("-std=c++0x" COMPILER_SUPPORTS_CXX0X)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c11 ")
+	find_package (Threads)
+	add_definitions("-DLINUX -O2 -s -Wall -Dlinux")
+
+	if(COMPILER_SUPPORTS_CXX11)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+	elseif(COMPILER_SUPPORTS_CXX0X)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+	else()
+		message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no
+			C++11 support. Please use a different C++ compiler.")
+	endif()
+endif(UNIX)
+file(GLOB SOURCES 
+	src/Audio.cpp
+	src/Timer.cpp
+	src/CtxWrapper.cpp
+	src/Option.cpp
+	src/TransState.cpp
+	src/Transcoder.cpp
+	src/Video.cpp
+)
+include_directories(${CMAKE_SOURCE_DIR}/media_core/code/inc)
+#link_directories(${CMAKE_SOURCE_DIR}/../lib)
+add_executable(Transcode ${SOURCES} src/main.cpp)
+add_library(NoovoTranscode SHARED ${SOURCES})
+#set(ffmpeg_lib avformat avfilter avcodec swresample swscale avutil avdevice x264 fdk-aac postproc)
+set(UnixLib z m pthread dl)
+target_link_libraries(Transcode ${FFMPEG_LIB})
+target_link_libraries(NoovoTranscode ${FFMPEG_LIB})
+target_link_libraries(NoovoTranscode ${LOGGER_LIB})
+if(UNIX)
+target_link_libraries(Transcode ${UnixLib})
+endif(UNIX)

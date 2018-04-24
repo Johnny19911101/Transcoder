@@ -75,7 +75,6 @@ int Video::Encode_write_frame(AVPacket* enc_pkt) {
             if(enc_pkt->pts!=AV_NOPTS_VALUE){
                 _endpoint=enc_pkt->pts+_duration;
             }
-          //  std::cout << "pts : "<<enc_pkt->pts<<"dts :"<<enc_pkt->dts<<std::endl;
             ret = av_interleaved_write_frame(_ofmt_ctx, enc_pkt);
             if (ret < 0)
                 throw std::runtime_error("Write frame error");

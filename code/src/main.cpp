@@ -2,76 +2,75 @@
 #include <unistd.h>
 #include "Timer.h"
 #include "Transcoder.h"
-#include "RPCServer.h"
-#include <grpc++/grpc++.h>
 #include <thread>
 #include <vector>
 #include <fstream>
 using namespace Noovo;
 using namespace std;
 char ch;
-
 struct buffer_data {
     uint8_t *ptr;
     size_t size; ///< size left in the buffer
 };
+struct buffer_data bd ;
+static int i ;
+static    uint8_t *buffer = NULL;
+static    size_t buffer_size;
 static int read_packet(void *opaque, uint8_t *buf, int buf_size)
 {
-   struct buffer_data *bd = (struct buffer_data *)opaque;
+   // struct buffer_data *bd = (struct buffer_data *)opaque;
 
-    buf_size = FFMIN(buf_size, bd->size);
+/*    if(bd.size < 4096){
+        bd.ptr = buffer;
+        bd.size = buffer_size;
+    }*/
+    buf_size = FFMIN(buf_size, bd.size);
 
     
     if (!buf_size)
         return AVERROR_EOF;
-    memcpy(buf, bd->ptr, buf_size);
-    bd->ptr  += buf_size;
-    bd->size -= buf_size;
+   // printf("ptr:%p size:%zu\n", bd.ptr, bd.size);
+
+    /* copy internal buffer data to buf */
+    memcpy(buf, bd.ptr, buf_size);
+    bd.ptr  += buf_size;
+    bd.size -= buf_size;
+    i++;
     return buf_size;
 }
 
-void RunServer() {
-  std::string server_address("0.0.0.0:50053");
-  ServiceImpl service;
+static void test1(){
+    std::unordered_map<int,std::shared_ptr<Stream>> testmpa;
+    std::vector<AVFormatContext*> test2;
+    std::pair<int,int> t{0x100,0x110};
+    std::vector<std::pair<int,int>> test4;
+    test4.push_back(t);
+    Transcoder& test = Transcoder::Instance();
+    int i=0;
+    while(1){
+        test.SetConfig("/home/johnny/abc.ts","test2",test4);
+        test.Process();
+        test.CleanUp();
 
-  grpc::ServerBuilder builder;
-  // Listen on the given address without any authentication mechanism.
-  builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-  // Register "service" as the instance through which we'll communicate with
-  // clients. In this case it corresponds to an *synchronous* service.
-  builder.RegisterService(&service);
-  // Finally assemble the server.
-  std::unique_ptr<grpc::Server> server(builder.grpc::ServerBuilder::BuildAndStart());
-  std::cout << "Server listening on " << server_address << std::endl;
-
-  // Wait for the server to shutdown. Note that some other thread must be
-  // responsible for shutting down the server for this call to ever return.
-  server->grpc::Server::Wait();
+          }
+    
 }
-
-
 static void test2(){
-   Transcoder * test = Transcoder::Instance();
-   std::vector<std::pair<int,int>> t{std::make_pair(256,257)};
-   test->SetConfig("/home/johnny/tiral_go.ts","File",t);
-   test->Process();
-}
-static void test3(){
-   Transcoder * test = Transcoder::Instance();
-   std::vector<std::pair<int,int>> t{std::make_pair(3042,3041)};
-   test->SetConfig("/home/johnny/test.ts","File",t);
-   test->Process();
-   test->Switch(std::make_pair(256,257),0,std::string("/home/johnny/tiral_go1.ts"));
-   test->Process();
-      test->Switch(std::make_pair(3041,3042),0,std::string("/home/johnny/test.ts"));
-   test->Process();
-   test->WriteEnd();
+
 }
 
 int main(){
-
-  //  RunServer();
-    test3();   
+    int ret;
+    
+    std::pair<int,int> t{3041,3042};
+    std::vector<std::pair<int,int>> test4;
+    test4.push_back(t);
+    ret = av_file_map("/home/johnny/test.ts", &buffer, &buffer_size, 0, NULL);
+    bd.ptr=buffer;
+    bd.size =buffer_size;
+    Transcoder& test = Transcoder::Instance();
+    test.InitalAvio(2048,nullptr,&read_packet,"test.m3u8",test4);
+    test.Process();
     return 0;
 
 }
