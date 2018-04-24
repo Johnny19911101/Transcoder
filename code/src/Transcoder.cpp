@@ -142,7 +142,7 @@ void Transcoder::SwitchChannel(int buffer_size,void *callback_pointer,int(*read)
         Adinsert adinsert("ad001.ts");
         _turnoff = true;
         std::lock_guard<std::mutex> temp_lock(_lock_process);
-        std::thread adinset_thread = adinsert.Process_thread();
+        std::thread adinset_thread = adinsert.Process_thread(_fmtwrapper_list[ofmt_index]);
 //      _pidObject.clear();
 //      _wrapper->Switch(2048,callback_pointer,read,pairs,_fmtwrapper_list[ofmt_index],_pidObject);
 //        _turnoff = false;
