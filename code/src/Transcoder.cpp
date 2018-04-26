@@ -79,7 +79,6 @@ void Transcoder::Process(){
         // Use the encoder's desired frame size for processing. 
         if ((ret = av_read_frame(ifmt_ctx, &packet)) < 0)
             break; 
-        std::cout << "here : " <<packet.stream_index<<std::endl;
         auto it = _pidObject.find(packet.stream_index);
         if(it !=_pidObject.end()){
             it->second->Flow(&packet);
@@ -94,12 +93,11 @@ void Transcoder::Process(){
         it->second->CleanUp();
         it->second.reset();
     }
+  
     _state->SetState(typeid(TranscodeStatus::Finished));
  }
 void Transcoder::WriteEnd(){
-    for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
-       it->second->FlushEncoder();
-    }
+
     for(auto it = _fmtwrapper_list.begin();it!=_fmtwrapper_list.end();++it){
         av_write_trailer((*it)->ReturnAvformat());
     }
@@ -108,6 +106,9 @@ void Transcoder::CleanUp(){
     std::lock_guard<std::mutex> temp_lock(_lock_process);	
     /*mutex lock*/
     _state->SetState(typeid(TranscodeStatus::Reset));
+    for(auto it = _pidObject.begin();it!=_pidObject.end();++it){
+       it->second->FlushEncoder();
+    }
     _wrapper->Cleanup(_fmtwrapper_list);
     _fmtwrapper_list.clear();
     _pidObject.clear();
@@ -139,13 +140,15 @@ int Transcoder::StopProcess(){
 void Transcoder::SwitchChannel(int buffer_size,void *callback_pointer,int(*read)(void *a, uint8_t *b, int c)
                     ,int ofmt_index,std::pair<int,int> pairs){
     try{   
-        Adinsert adinsert("ad001.ts");
+        std::shared_ptr<Adinsert> adinsert=std::make_shared<Adinsert>("ad001.ts");
         _turnoff = true;
-        std::lock_guard<std::mutex> temp_lock(_lock_process);
-        std::thread adinset_thread = adinsert.Process_thread(_fmtwrapper_list[ofmt_index]);
-//      _pidObject.clear();
-//      _wrapper->Switch(2048,callback_pointer,read,pairs,_fmtwrapper_list[ofmt_index],_pidObject);
-//        _turnoff = false;
+        std::lock_guard<std::mutex> temp_lock(_lock_process);     
+        std::thread adinsert_thread = adinsert->Process_thread(_fmtwrapper_list[ofmt_index]);
+        _pidObject.clear();
+        _wrapper->Switch(188*10*5,callback_pointer,read,pairs,_fmtwrapper_list[ofmt_index],_pidObject); 
+        adinsert_thread.join();
+        adinsert.reset();
+        _turnoff = false;
         return 0;
     }catch(std::exception const& e) {
         std::cout << "Exception: " << e.what() ;

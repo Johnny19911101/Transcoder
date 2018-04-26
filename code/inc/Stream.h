@@ -68,14 +68,16 @@ namespace Noovo{
         inline int64_t Returnconcate(){
             return _concatenate;
         }
-        void SetStream(std::shared_ptr<Stream> audio,std::shared_ptr<Stream> video){
+        inline void SetStream(std::shared_ptr<Stream> audio,std::shared_ptr<Stream> video){
             _audio = audio;
             _video = video;    
         }
-        void GetConcatpoint(){
+        inline void GetConcatpoint(){
             _concatenate =_video->ReturnEndPoint();
         }
-
+        inline void GetConcatpoint(int64_t con){
+            _concatenate =con;
+        }
     private:
         AVFormatContext* _ofmt_ctx;
         int _video_index;

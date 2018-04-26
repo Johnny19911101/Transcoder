@@ -186,8 +186,11 @@ int  CtxWrapper::_ofmtInital(const std::string& filename,int pid_first,int pid_s
 void  CtxWrapper::_option(AVFormatContext *ctx){
         av_opt_set_int(ctx->priv_data,"hls_list_size",10,0);
         av_opt_set_int(ctx->priv_data,"hls_time",10,0);
+        av_opt_set_int(ctx->priv_data,"http_persistent",1,0); 
+        av_opt_set_int(ctx->priv_data,"hls_wrap",10,0);   
         av_opt_set(ctx->priv_data,"hls_flags","split_by_time",0);
-        av_opt_set(ctx->priv_data,"hls_flags","delete_segments",0);
+       // av_opt_set(ctx->priv_data,"hls_flags","delete_segments",0);   
+        av_opt_set(ctx->priv_data,"hls_flags","independent_segments",0); 
 }
 void  CtxWrapper::_ofmtheader(AVFormatContext*& ofmt_ctx,const std::string& filename){
     if (!(ofmt_ctx->oformat->flags & AVFMT_NOFILE)) {

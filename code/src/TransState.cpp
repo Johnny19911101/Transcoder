@@ -1,4 +1,5 @@
 #include "TransState.h"
+
 using namespace Noovo;
 TranscodeStatus::TranscodeStatus() : _modes(), _current(0) 
 {
@@ -7,7 +8,7 @@ TranscodeStatus::~TranscodeStatus()
 {
 }
 
-void Noovo::TranscodeStatus::Initialize()
+void TranscodeStatus::Initialize()
 {	std::lock_guard<std::mutex> temp_lock(_lock_state);
 	/*lock*/
 	_init_state<TranscodeStatus::Initial>();//"Initialize");
@@ -21,7 +22,7 @@ void Noovo::TranscodeStatus::Initialize()
 	_current = it->second.get();
 }
 
-void Noovo::TranscodeStatus::SetState(const std::type_index & state_index)
+void TranscodeStatus::SetState(const std::type_index & state_index)
 {	
 	std::lock_guard<std::mutex> temp_lock(_lock_state);	
 	/*lock*/
@@ -31,7 +32,7 @@ void Noovo::TranscodeStatus::SetState(const std::type_index & state_index)
 	}
 }
 
-TransState & Noovo::TranscodeStatus::GetTransState()
+TransState & TranscodeStatus::GetTransState()
 {	
 	std::lock_guard<std::mutex> temp_lock(_lock_state);	
 	/*lock*/
